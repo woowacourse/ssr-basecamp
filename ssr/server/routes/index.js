@@ -57,6 +57,13 @@ const renderMovies = async (res, filter) => {
     `;
     const template = fs.readFileSync(templatePath, "utf-8");
     const bestMovie = movies[0];
+    const filterMapper = {
+      "now-playing": "상영 중",
+      popular: "인기순",
+      "top-rated": "평점순",
+      upcoming: "상영 예정",
+    };
+    const filterLink = filter.replace("_", "-");
     const renderedHTML = template
       .replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML)
       .replace("${bestMovie.rate}", `${bestMovie.vote_average.toFixed(2)}`)
@@ -65,16 +72,29 @@ const renderMovies = async (res, filter) => {
       .replace(
         "${background-container}",
         `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces//${bestMovie.backdrop_path}`
+      )
+      .replace(
+        `            <a href="/${filterLink}">
+              <div class="tab-item">
+                <h3>${filterMapper[filterLink]}</h3>
+              </div></a
+            >`,
+        `            <a href="/${filterLink}">
+              <div class="tab-item selected">
+                <h3>${filterMapper[filterLink]}</h3>
+              </div></a
+            >`
       );
 
     res.send(renderedHTML);
+    res.end();
   } catch (error) {
     (error) => console.error("Error:", error);
   }
 };
 
 // 상영 중
-router.get(["/", "/now-playing"], async (_, res) => {
+router.get([",", "/now-playing"], async (_, res) => {
   renderMovies(res, "now_playing");
 });
 
