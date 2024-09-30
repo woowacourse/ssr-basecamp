@@ -56,10 +56,16 @@ const renderMovies = async (res, filter) => {
       .join("")}
     `;
     const template = fs.readFileSync(templatePath, "utf-8");
+    const bestMovie = movies[0];
     const renderedHTML = template
       .replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML)
-      .replace("${bestMovie.rate}", `${movies[0].vote_average.toFixed(2)}`)
-      .replace("${bestMovie.title}", `${movies[0].title}`);
+      .replace("${bestMovie.rate}", `${bestMovie.vote_average.toFixed(2)}`)
+      .replace("${bestMovie.title}", `${bestMovie.title}`)
+      .replace("${bestMovie.modal}", `/detail/${bestMovie.id}`)
+      .replace(
+        "${background-container}",
+        `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces//${bestMovie.backdrop_path}`
+      );
 
     res.send(renderedHTML);
   } catch (error) {
