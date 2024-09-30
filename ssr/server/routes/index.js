@@ -5,7 +5,16 @@ import { fileURLToPath } from "url";
 import fetch from "node-fetch";
 
 const TMDB_TOKEN = process.env.TMDB_TOKEN;
-const url = "https://api.themoviedb.org/3/authentication";
+// const url = "https://api.themoviedb.org/3/authentication";
+
+const url = (filter) => {
+  return `https://api.themoviedb.org/3/movie/${filter}?language=ko-KR&page=1`;
+};
+
+// https://api.themoviedb.org/3/movie/popular?language=ko-KR&page=1
+// https://api.themoviedb.org/3/movie/now_playing?language=ko-KR&page=1
+// https://api.themoviedb.org/3/movie/top_rated?language=ko-KR&page=1
+// https://api.themoviedb.org/3/movie/upcoming?language=ko-KR&page=1
 
 const options = {
   method: "GET",
@@ -21,27 +30,32 @@ const __dirname = path.dirname(__filename);
 const router = Router();
 
 // 상영 중
-router.get(["/", "/now-playing"], (_, res) => {
+router.get(["/", "/now-playing"], async (_, res) => {
   const templatePath = path.join(__dirname, "../../views", "index.html");
-  const moviesHTML = "<p>들어갈 본문 작성</p>";
 
-  const template = fs.readFileSync(templatePath, "utf-8");
-  const renderedHTML = template.replace(
-    "<!--${MOVIE_ITEMS_PLACEHOLDER}-->",
-    moviesHTML
-  );
+  try {
+    const response = await fetch(url("popular"), options);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
 
-  fetch(url, options)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then((data) => console.log(data))
-    .catch((error) => console.error("Error:", error));
+    const data = await response.json();
+    const movies = data.result;
+    const moviesHTML = `
+    ${movies.map((movie) => "hello")}
+  
+  `;
 
-  res.send(renderedHTML);
+    const template = fs.readFileSync(templatePath, "utf-8");
+    const renderedHTML = template.replace(
+      "<!--${MOVIE_ITEMS_PLACEHOLDER}-->",
+      moviesHTML
+    );
+
+    res.send(renderedHTML);
+  } catch (error) {
+    (error) => console.error("Error:", error);
+  }
 });
 
 // 인기순
