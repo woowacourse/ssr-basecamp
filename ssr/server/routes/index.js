@@ -5,16 +5,9 @@ import { fileURLToPath } from "url";
 import fetch from "node-fetch";
 
 const TMDB_TOKEN = process.env.TMDB_TOKEN;
-// const url = "https://api.themoviedb.org/3/authentication";
-
 const url = (filter) => {
   return `https://api.themoviedb.org/3/movie/${filter}?language=ko-KR&page=1`;
 };
-
-// https://api.themoviedb.org/3/movie/popular?language=ko-KR&page=1
-// https://api.themoviedb.org/3/movie/now_playing?language=ko-KR&page=1
-// https://api.themoviedb.org/3/movie/top_rated?language=ko-KR&page=1
-// https://api.themoviedb.org/3/movie/upcoming?language=ko-KR&page=1
 
 const options = {
   method: "GET",
@@ -63,10 +56,10 @@ const renderMovies = async (res, filter) => {
       .join("")}
     `;
     const template = fs.readFileSync(templatePath, "utf-8");
-    const renderedHTML = template.replace(
-      "<!--${MOVIE_ITEMS_PLACEHOLDER}-->",
-      moviesHTML
-    );
+    const renderedHTML = template
+      .replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML)
+      .replace("${bestMovie.rate}", `${movies[0].vote_average.toFixed(2)}`)
+      .replace("${bestMovie.title}", `${movies[0].title}`);
 
     res.send(renderedHTML);
   } catch (error) {
