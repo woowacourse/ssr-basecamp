@@ -29,7 +29,7 @@ const handleMovieDetailRequest = async (req, res) => {
     const pagePathSegment = previousPage.split("/").at(-1);
 
     const movieListType = Object.keys(pageTypeMapping).includes(pagePathSegment)
-      ? pageTypeMapping[pagePathSegments]
+      ? pageTypeMapping[pagePathSegment]
       : "NOW_PLAYING";
 
     const [movieDetail, moviesData] = await Promise.all([
