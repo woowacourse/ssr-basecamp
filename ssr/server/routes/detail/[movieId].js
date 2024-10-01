@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import createIndex from '../../../views/createIndex.js';
-import createModal from '../../../views/createModal.js';
+import createMovieDetailModal from '../../../views/createMovieDetailModal.js';
 import getMovieDetail from '../../../apis/getMovieDetail.js';
 import getReplacedString from '../../../utils/getReplacedString.js';
 
@@ -11,7 +11,7 @@ router.get('/:movieId', async (request, res) => {
   const id = request.params.movieId;
   const movieDetail = await getMovieDetail(id);
   const modalAddedHTML = getReplacedString(html, [
-    ['<!--${MODAL_AREA}-->', createModal(movieDetail)],
+    ['<!--${MODAL_AREA}-->', createMovieDetailModal(movieDetail)],
   ]);
   res.send(modalAddedHTML);
 });
