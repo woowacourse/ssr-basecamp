@@ -20,3 +20,10 @@ export const FETCH_OPTIONS = {
     Authorization: 'Bearer ' + process.env.TMDB_TOKEN,
   },
 };
+
+export const MOVIE_TYPE_TAP_ITEM_KO = {
+  nowPlaying: '상영 중',
+  popular: '인기순',
+  topRated: '평점순',
+  upcoming: '상영 예정',
+};
