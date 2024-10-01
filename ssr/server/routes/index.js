@@ -107,33 +107,14 @@ const renderHTML = async (res, filter, modal = false, modalMovieId) => {
       );
     if (modal) {
       const modalMovie = await getMovie(modalMovieId);
+
       res.send(
-        renderedHTML.replace(
-          "<!--${MODAL_AREA}-->",
-          `<div class="modal-background active" id="modalBackground">
-              <div class="modal">
-                <button class="close-modal" id="closeModal">
-                  <img src="/assets/images/modal_button_close.png">
-                </button>
-                <div class="modal-container">
-                  <div class="modal-image">
-                    <img src="https://image.tmdb.org/t/p/original//I1fkNd5CeJGv56mhrTDoOeMc2r.jpg" alt="${
-                      modalMovie.title
-                    }">
-                  </div>
-                  <div class="modal-description">
-                    <h2>${modalMovie.title}</h2>
-                    <p class="category">1972 · 드라마, 범죄</p>
-                    <p class="rate"><img src="/assets/images/star_empty.png" class="star">
-                      <span>${modalMovie.vote_average.toFixed(2)}</span>
-                    </p>
-                    <hr>
-                    <p class="detail">${modalMovie.overview}</p>
-                  </div>
-                </div>
-              </div>
-            </div>`
-        )
+        renderedHTML
+          .replace("modal-background", `modal-background active`)
+          .replaceAll("${title}", `${modalMovie.title}`)
+          .replace("${poster_path}", `${modalMovie.poster_path}`)
+          .replace("${vote_average}", `${modalMovie.vote_average}`)
+          .replace("${overview}", `${modalMovie.overview}`)
       );
     } else {
       res.send(renderedHTML);
@@ -166,11 +147,12 @@ router.get("/upcoming", (_, res) => {
 router.get("/detail/:movieId", (req, res) => {
   const referer = req.get("Referer");
   const movieId = req.params.movieId;
+  const filter = referer?.split("/").at(-1);
 
-  if (referer) {
-    renderHTML(res, referer.split("/").at(-1), true, movieId);
+  if (filter && ["popular", "top-rated", "upcoming"].includes(filter)) {
+    renderHTML(res, filter, true, movieId);
   } else {
-    renderHTML(res, "now-playing", true, movieId);
+    renderHTML(res, "now_playing", true, movieId);
   }
 });
 
