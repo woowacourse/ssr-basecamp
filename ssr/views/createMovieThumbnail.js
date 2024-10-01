@@ -34,7 +34,7 @@ export default function createMovieThumbnail(movie) {
       <div class='item-desc'>
         <p class='rate'>
           <img src='../assets/images/star_empty.png' class='star' />
-          <span>${movie.vote_average}</span>
+          <span>${movie.vote_average.toFixed(1)}</span>
         </p>
         <strong>${movie.title}</strong>
       </div>
