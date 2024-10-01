@@ -78,10 +78,29 @@ export const renderMovieDetailModal = (movieDetail) => {
     <script>
       const modalBackground = document.getElementById("modalBackground");
       const closeModal = document.getElementById("closeModal");
+      const previousPath = new URL(document.referrer).pathname;
+      
+      const updateTabSelection = (path) => {
+        const tabItems = document.querySelectorAll(".tab-item");
+        tabItems.forEach((item) => {
+          const link = item.closest("a");
+          const isSelected = link.getAttribute("href") === path;
+          const isRootPath = link.getAttribute("href") === "/now-playing" && path === "/";
+          
+          item.classList.remove("selected");
+          if (isSelected || isRootPath) {
+            item.classList.add("selected");
+          }
+        });
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
         closeModal.addEventListener("click", () => {
           modalBackground.classList.remove("active");
+          history.replaceState({}, '', previousPath);
+          updateTabSelection(previousPath);
         });
+
       });
     </script>
   `;
