@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 
 const router = Router();
 
-const handleMovieRequest = async (res, movieListType) => {
+export const handleMovieRequest = async (res, movieListType) => {
   try {
     const moviesData = await fetchMovies(movieListType);
     const templatePath = path.join(__dirname, "../../views", "index.html");
