@@ -33,28 +33,28 @@
         <ul class="tab">
           <li>
             <a href="/now-playing">
-              <div class="tab-item">
+              <div class="tab-item now-playing">
                 <h3>상영 중</h3>
               </div></a
             >
           </li>
           <li>
             <a href="/popular"
-              ><div class="tab-item">
+              ><div class="tab-item popular">
                 <h3>인기순</h3>
               </div></a
             >
           </li>
           <li>
             <a href="/top-rated"
-              ><div class="tab-item">
+              ><div class="tab-item top-rated">
                 <h3>평점순</h3>
               </div></a
             >
           </li>
           <li>
             <a href="/upcoming"
-              ><div class="tab-item">
+              ><div class="tab-item upcoming">
                 <h3>상영 예정</h3>
               </div></a
             >
@@ -77,4 +77,13 @@
     </div>
     <!--${MODAL_AREA}-->
   </body>
+
+  <script>
+    const $closeModal = document.querySelector("#closeModal");
+    const $modalBackground = document.querySelector(".modal-background");
+
+    $closeModal.addEventListener("click", () => {
+      $modalBackground.classList.remove("active");
+    });
+  </script>
 </html>
