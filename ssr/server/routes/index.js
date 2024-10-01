@@ -61,11 +61,31 @@ const fetchAllMovies = async () => {
   }
 };
 
+
+const round = (value, decimals = 0) => {
+  const factor = 10 ** decimals;
+
+  return Math.round(value * factor) / factor;
+};
+
+const renderBestMovie = (movie, html) => {
+  const bannerUrl = TMDB_BANNER_URL + movie.backdrop_path;
+
+  return html
+    .replace("${background-container}", bannerUrl)
+    .replace("${bestMovie.rate}", round(movie.vote_average, 1))
+    .replace("${bestMovie.title}", movie.title);
+};
+
 router.get("/", async (_, res) => {
   try {
     const templatePath = path.join(__dirname, "../../views", "index.html");
 
     const movieData = await fetchAllMovies();
+    const bestMovieHTML = renderBestMovie(
+      movieData.popular.results[0],
+      template
+    );
     res.send(renderedHTML);
   } catch (error) {
     console.error("Error rendering page:", error);
