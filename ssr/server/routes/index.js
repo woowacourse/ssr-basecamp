@@ -61,6 +61,23 @@ const fetchAllMovies = async () => {
   }
 };
 
+const renderMovieItem = movie => {
+  const thumbnailFullUrl = TMDB_THUMBNAIL_URL + movie.poster_path;
+  return `
+    <li class="movie-item">
+      <div class="item" onclick="handleClick('${movie.id}')">
+        <img class="thumbnail" src="${thumbnailFullUrl}" alt="${movie.title}" />
+        <div class="item-desc">
+          <p class="rate">
+            <img src="path/to/star-empty-icon" class="star" />
+            <span>${Math.round(movie.vote_average * 10) / 10}</span>
+          </p>
+          <strong>${movie.title}</strong>
+        </div>
+      </div>
+    </li>
+  `;
+};
 
 const round = (value, decimals = 0) => {
   const factor = 10 ** decimals;
@@ -82,10 +99,21 @@ router.get("/", async (_, res) => {
     const templatePath = path.join(__dirname, "../../views", "index.html");
 
     const movieData = await fetchAllMovies();
+    const moviesHTML = `
+      <ul>
+        ${movieData.popular.results.map(renderMovieItem).join("")}
+      </ul>
+    `;
+    const template = fs.readFileSync(templatePath, "utf-8");
     const bestMovieHTML = renderBestMovie(
       movieData.popular.results[0],
       template
     );
+    const renderedHTML = bestMovieHTML.replace(
+      "<!--${MOVIE_ITEMS_PLACEHOLDER}-->",
+      moviesHTML
+    );
+
     res.send(renderedHTML);
   } catch (error) {
     console.error("Error rendering page:", error);
