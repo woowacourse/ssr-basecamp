@@ -14,17 +14,29 @@
   <body>
     <div id="wrap">
       <header>
-        <div class="background-container" style="background-image: url('${background-container}')">
+        <div
+          class="background-container"
+          style="background-image: url('${background-container}')"
+        >
           <div class="overlay" aria-hidden="true"></div>
           <div class="top-rated-container">
-            <h1 class="logo"><img src="../assets/images/logo.png" alt="MovieList" /></h1>
+            <h1 class="logo">
+              <img src="../assets/images/logo.png" alt="MovieList" />
+            </h1>
             <div class="top-rated-movie">
               <div class="rate">
                 <img src="../assets/images/star_empty.png" class="star" />
                 <span class="rate-value">${bestMovie.rate}</span>
               </div>
               <div class="title">${bestMovie.title}</div>
-              <button class="primary detail">자세히 보기</button>
+              <a
+                href="${bestMovie.modal}"
+                class="active"
+                data-status="active"
+                aria-current="page"
+              >
+                <button class="primary detail">자세히 보기</button>
+              </a>
             </div>
           </div>
         </div>
@@ -39,22 +51,22 @@
             >
           </li>
           <li>
-            <a href="/popular"
-              ><div class="tab-item">
+            <a href="/popular">
+              <div class="tab-item">
                 <h3>인기순</h3>
               </div></a
             >
           </li>
           <li>
-            <a href="/top-rated"
-              ><div class="tab-item">
+            <a href="/top-rated">
+              <div class="tab-item">
                 <h3>평점순</h3>
               </div></a
             >
           </li>
           <li>
-            <a href="/upcoming"
-              ><div class="tab-item">
+            <a href="/upcoming">
+              <div class="tab-item">
                 <h3>상영 예정</h3>
               </div></a
             >
@@ -76,5 +88,38 @@
       </footer>
     </div>
     <!--${MODAL_AREA}-->
+    <div class="modal-background" id="modalBackground">
+      <div class="modal">
+        <button class="close-modal" id="closeModal">
+          <img src="/assets/images/modal_button_close.png" />
+        </button>
+        <div class="modal-container">
+          <div class="modal-image">
+            <img
+              src="https://image.tmdb.org/t/p/original//${poster_path}"
+              alt="${title}"
+            />
+          </div>
+          <div class="modal-description">
+            <h2>${title}</h2>
+            <p class="category">1972 · 드라마, 범죄</p>
+            <p class="rate">
+              <img src="/assets/images/star_empty.png" class="star" />
+              <span>${vote_average}</span>
+            </p>
+            <hr />
+            <p class="detail">${overview}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
+  <script>
+    const $closeModal = document.querySelector("#closeModal");
+    const $modalBackground = document.querySelector(".modal-background");
+
+    $closeModal.addEventListener("click", () => {
+      $modalBackground.classList.remove("active");
+    });
+  </script>
 </html>

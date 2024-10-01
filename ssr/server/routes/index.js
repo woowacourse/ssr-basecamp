@@ -1,21 +1,38 @@
 import { Router } from "express";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { renderHTML } from "../render.js";
 
 const router = Router();
 
-router.get("/", (_, res) => {
-  const templatePath = path.join(__dirname, "../../views", "index.html");
-  const moviesHTML = "<p>들어갈 본문 작성</p>";
+// 상영 중
+router.get(["/", "/now-playing"], async (_, res) => {
+  renderHTML(res, "now_playing");
+});
 
-  const template = fs.readFileSync(templatePath, "utf-8");
-  const renderedHTML = template.replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML);
+// 인기순
+router.get("/popular", (_, res) => {
+  renderHTML(res, "popular");
+});
 
-  res.send(renderedHTML);
+// 평점순
+router.get("/top-rated", (_, res) => {
+  renderHTML(res, "top_rated");
+});
+
+// 상영 예정
+router.get("/upcoming", (_, res) => {
+  renderHTML(res, "upcoming");
+});
+
+router.get("/detail/:movieId", (req, res) => {
+  const referer = req.get("Referer");
+  const movieId = req.params.movieId;
+  const filter = referer?.split("/").at(-1);
+
+  if (filter && ["popular", "top-rated", "upcoming"].includes(filter)) {
+    renderHTML(res, filter, true, movieId);
+  } else {
+    renderHTML(res, "now_playing", true, movieId);
+  }
 });
 
 export default router;
