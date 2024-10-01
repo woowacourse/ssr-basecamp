@@ -1,4 +1,4 @@
-import { TMDB_MOVIE_LISTS } from "../src/constant.js";
+import { TMDB_MOVIE_DETAIL_URL, TMDB_MOVIE_LISTS } from "../src/constant.js";
 import { fetchMovies } from "../src/fetchMovies.js";
 import { fileURLToPath } from "url";
 import fs from "fs";
@@ -71,10 +71,63 @@ const getMovieURL = (path) => {
   }
 };
 
+const getMovieDetailModalHTML = async (movieId) => {
+  const movieDetail = await fetchMovies(TMDB_MOVIE_DETAIL_URL + movieId);
+
+  const modalElement = `<div class="modal-background active" id="modalBackground">
+      <div class="modal">
+        <button class="close-modal" id="closeModal"><img src="../assets/images/modal_button_close.png" /></button>
+        <div class="modal-container">
+          <div class="modal-image">
+            <img src="https://image.tmdb.org/t/p/original/${movieDetail.poster_path}" />
+          </div>
+          <div class="modal-description">
+            <h2>${movieDetail.title}</h2>
+            <p class="category">${movieDetail.genres.map((genre) => genre.name)}</p>
+            <p class="rate"><img src="../assets/images/star_filled.png" class="star" /><span>${movieDetail.vote_average.toFixed(
+              1
+            )}</span></p>
+            <hr />
+            <p class="detail">
+              ${movieDetail.overview}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 모달 창 닫기 스크립트 -->
+      <script>
+        const modalBackground = document.getElementById("modalBackground");
+        const closeModal = document.getElementById("closeModal");
+        document.addEventListener("DOMContentLoaded", () => {
+          closeModal.addEventListener("click", () => {
+            modalBackground.classList.remove("active");
+          });
+        });
+      </script>
+      `;
+
+  return modalElement;
+};
+
 export const getMoviePage = async (req, res) => {
   const movieURL = getMovieURL(req.url);
   const movies = await fetchMovies(movieURL);
   const moviePageHTML = insertMovieContent(movies, req.url);
 
   res.send(moviePageHTML);
+};
+
+export const getMovieDetailModal = async (req, res) => {
+  const referer = req.get("Referer");
+  const prevURL = referer.split("http://localhost:3000")[1];
+  const movieURL = getMovieURL(prevURL) || TMDB_MOVIE_LISTS.NOW_PLAYING;
+  const movies = await fetchMovies(movieURL);
+
+  const moviePageHTML = insertMovieContent(movies, req.url);
+  const movieDetailHTML = await getMovieDetailModalHTML(req.params.id);
+
+  const moviePageWithModalHTML = moviePageHTML.replace("<!--${MODAL_AREA}-->", movieDetailHTML);
+
+  res.send(moviePageWithModalHTML);
 };

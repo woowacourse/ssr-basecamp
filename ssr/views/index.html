@@ -77,4 +77,13 @@
     </div>
     <!--${MODAL_AREA}-->
   </body>
+
+  <script>
+    const $closeModal = document.querySelector("#closeModal");
+    const $modalBackground = document.querySelector(".modal-background");
+
+    $closeModal.addEventListener("click", () => {
+      $modalBackground.classList.remove("active");
+    });
+  </script>
 </html>
