@@ -17,6 +17,13 @@ const options = {
   },
 };
 
+const filterMapper = {
+  "now-playing": "상영 중",
+  popular: "인기순",
+  "top-rated": "평점순",
+  upcoming: "상영 예정",
+};
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -57,15 +64,18 @@ const getMovies = async (filter) => {
   return data.results;
 };
 
-const filterMapper = {
-  "now-playing": "상영 중",
-  popular: "인기순",
-  "top-rated": "평점순",
-  upcoming: "상영 예정",
+const getMovie = async (movieId) => {
+  const url = `https://api.themoviedb.org/3/movie/${movieId}?language=ko-KR`;
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data;
 };
 
-const renderHTML = async (res, filter, modal = false, from) => {
-  console.log(modal, from);
+const renderHTML = async (res, filter, modal = false, modalMovieId) => {
   try {
     const templatePath = path.join(__dirname, "../../views", "index.html");
     const movies = await getMovies(filter);
@@ -95,9 +105,39 @@ const renderHTML = async (res, filter, modal = false, from) => {
               </div></a
             >`
       );
-
-    res.send(renderedHTML);
-    res.end();
+    if (modal) {
+      const modalMovie = await getMovie(modalMovieId);
+      res.send(
+        renderedHTML.replace(
+          "<!--${MODAL_AREA}-->",
+          `<div class="modal-background active" id="modalBackground">
+              <div class="modal">
+                <button class="close-modal" id="closeModal">
+                  <img src="/assets/images/modal_button_close.png">
+                </button>
+                <div class="modal-container">
+                  <div class="modal-image">
+                    <img src="https://image.tmdb.org/t/p/original//I1fkNd5CeJGv56mhrTDoOeMc2r.jpg" alt="${
+                      modalMovie.title
+                    }">
+                  </div>
+                  <div class="modal-description">
+                    <h2>${modalMovie.title}</h2>
+                    <p class="category">1972 · 드라마, 범죄</p>
+                    <p class="rate"><img src="/assets/images/star_empty.png" class="star">
+                      <span>${modalMovie.vote_average.toFixed(2)}</span>
+                    </p>
+                    <hr>
+                    <p class="detail">${modalMovie.overview}</p>
+                  </div>
+                </div>
+              </div>
+            </div>`
+        )
+      );
+    } else {
+      res.send(renderedHTML);
+    }
   } catch (error) {
     (error) => console.error("Error:", error);
   }
@@ -123,13 +163,14 @@ router.get("/upcoming", (_, res) => {
   renderHTML(res, "upcoming");
 });
 
-router.get("/detail/:id", (req, res) => {
+router.get("/detail/:movieId", (req, res) => {
   const referer = req.get("Referer");
+  const movieId = req.params.movieId;
 
   if (referer) {
-    renderHTML(res, "upcoming", true, referer.split("/").at(-1));
+    renderHTML(res, referer.split("/").at(-1), true, movieId);
   } else {
-    renderHTML(res, "upcoming", true);
+    renderHTML(res, "now-playing", true, movieId);
   }
 });
 
