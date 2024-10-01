@@ -20,15 +20,16 @@ import { TMDB_THUMBNAIL_URL } from '../constants.js';
 
 /**
  * @param {Movie} movie - 영화 객체
- * @param {?string} clickLink - 클릭 시 이동할 링크
+ * @param {?string} href - 클릭 시 이동할 링크
  * @returns {string} html형식의 값
  */
 
 export default function createMovieThumbnail(
   movie,
-  clickLink = '/detail/' + movie.id
+  href = '/detail/' + movie.id
 ) {
-  return `<li href="${clickLink}">
+  return `<li>
+  <a href="${href}">
     <div class='item'>
       <img
         class='thumbnail'
@@ -43,5 +44,6 @@ export default function createMovieThumbnail(
         <strong>${movie.title}</strong>
       </div>
     </div>
+    </a>
   </li>`;
 }

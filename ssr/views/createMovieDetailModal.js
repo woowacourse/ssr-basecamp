@@ -60,13 +60,17 @@ import { TMDB_ORIGINAL_URL } from '../constants.js';
 /**
  *
  * @param {MovieDetail} movieDetail
- * @param {?string} closeLink
+ * @param {?string} href
  * @returns {string} html형식의 모달
  */
-export default function createMovieDetailModal(movieDetail, closeLink = '/') {
+export default function createMovieDetailModal(movieDetail, href = '/') {
   return `<div class="modal-background active" id="modalBackground">
       <div class="modal">
-        <a href="${closeLink}" class="close-modal" id="closeModal"><img src="/assets/images/modal_button_close.png" /></a>
+      <button class="close-modal" id="closeModal">
+        <a href="${href}">
+          <img src="/assets/images/modal_button_close.png" />
+        </a>
+        </button>
         <div class="modal-container">
           <div class="modal-image">
             <img src="${TMDB_ORIGINAL_URL}${movieDetail.poster_path}" />
