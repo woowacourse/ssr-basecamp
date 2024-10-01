@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { fetchMovies } from "../utils/tmdb.js";
 import { renderMovieItems, renderHeader } from "../utils/render.js";
+import detailRouter from "./detail.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,5 +37,6 @@ router.get(["/", "/now-playing"], (_, res) =>
 router.get("/popular", (_, res) => handleMovieRequest(res, "POPULAR"));
 router.get("/top-rated", (_, res) => handleMovieRequest(res, "TOP_RATED"));
 router.get("/upcoming", (_, res) => handleMovieRequest(res, "UPCOMING"));
+router.use("/detail", detailRouter);
 
 export default router;
