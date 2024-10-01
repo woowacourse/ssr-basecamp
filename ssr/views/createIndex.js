@@ -24,6 +24,7 @@ const createIndex = async (movieType = 'nowPlaying') => {
     ['${background-container}', TMDB_BANNER_URL + mainMovie.backdrop_path],
     ['${bestMovie.rate}', mainMovie.vote_average.toFixed(1)],
     ['${bestMovie.title}', mainMovie.title],
+    ['자세히 보기', `<a href="detail/${mainMovie.id}">자세히보기</a>`],
     // 현재 선택 한 값 확인
     [
       new RegExp(
