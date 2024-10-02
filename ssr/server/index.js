@@ -20,6 +20,7 @@ app.use(
 );
 
 app.use('/', nowPlaying);
+app.use('/now-playing', nowPlaying);
 app.use('/popular', popular);
 // app.use("/members", membersRouter); // 본 미션 참고를 위한 코드이며 사전 미션에서는 사용하지 않습니다.
 
