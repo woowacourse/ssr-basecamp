@@ -11,7 +11,6 @@ export const TMDB_MOVIE_LISTS = {
 };
 export const TMDB_MOVIE_DETAIL_URL = "https://api.themoviedb.org/3/movie/";
 
-console.log(`token:`, process.env.TMDB_TOKEN);
 export const FETCH_OPTIONS = {
   method: "GET",
   headers: {
