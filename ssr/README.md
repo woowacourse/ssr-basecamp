@@ -25,9 +25,11 @@ npm run dev
   ```js
   export const BASE_URL = "https://api.themoviedb.org/3/movie";
 
-  export const TMDB_THUMBNAIL_URL = "https://media.themoviedb.org/t/p/w440_and_h660_face/";
+  export const TMDB_THUMBNAIL_URL =
+    "https://media.themoviedb.org/t/p/w440_and_h660_face/";
   export const TMDB_ORIGINAL_URL = "https://image.tmdb.org/t/p/original/";
-  export const TMDB_BANNER_URL = "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/";
+  export const TMDB_BANNER_URL =
+    "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/";
   export const TMDB_MOVIE_LISTS = {
     POPULAR: BASE_URL + "/popular?language=ko-KR&page=1",
     NOW_PLAYING: BASE_URL + "/now_playing?language=ko-KR&page=1",
@@ -100,10 +102,14 @@ express 서버에서 `views/index.html` 파일을 활용하여 클라이언트�
     const templatePath = path.join(__dirname, "../../views", "index.html");
     let template = fs.readFileSync(templatePath, "utf-8");
 
-    template = template.replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML);
+    template = template.replace(
+      "<!--${MOVIE_ITEMS_PLACEHOLDER}-->",
+      moviesHTML
+    );
     template = template.replace(
       "${background-container}",
-      "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/" + bestMovieItem.background
+      "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/" +
+        bestMovieItem.background
     );
     template = template.replace("${bestMovie.rate}", bestMovieItem.rate);
     template = template.replace("${bestMovie.title}", bestMovieItem.title);
@@ -127,11 +133,15 @@ express 서버에서 `views/index.html` 파일을 활용하여 클라이언트�
           <button class="close-modal" id="closeModal"><img src="../images/modal_button_close.png" /></button>
           <div class="modal-container">
             <div class="modal-image">
-              <img src="https://image.tmdb.org/t/p/original/${movieDetail.thumbnail}.jpg" />
+              <img src="https://image.tmdb.org/t/p/original/${
+                movieDetail.thumbnail
+              }.jpg" />
             </div>
             <div class="modal-description">
               <h2>${movieDetail.title}</h2>
-              <p class="category">${movieDetail.releaseYear} · ${movieDetail.genres.join(", ")}</p>
+              <p class="category">${
+                movieDetail.releaseYear
+              } · ${movieDetail.genres.join(", ")}</p>
               <p class="rate"><img src="../images/star_filled.png" class="star" /><span>7.7</span></p>
               <hr />
               <p class="detail">

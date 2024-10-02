@@ -15,7 +15,12 @@ const useMovies = () => {
   const [upcomingMovies, setUpcomingMovies] = useAtom(upcomingMoviesAtom);
   const [focusedIndex, setFocusedIndex] = useAtom(focusedIndexAtom);
 
-  const movieLists = [nowPlayingMovies, popularMovies, topRatedMovies, upcomingMovies];
+  const movieLists = [
+    nowPlayingMovies,
+    popularMovies,
+    topRatedMovies,
+    upcomingMovies,
+  ];
 
   const loadMovies = async (url, setter) => {
     const response = await fetch(url, FETCH_OPTIONS);
