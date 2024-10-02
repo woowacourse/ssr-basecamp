@@ -10,7 +10,7 @@ export const renderMovieItems = (movieItems = []) =>
               alt="${title}"
             />
             <div class="item-desc">
-              <p class="rate"><img src="../images/star_empty.png" class="star" /><span>${rate}</span></p>
+              <p class="rate"><img src="/assets/images/star_empty.png" class="star" /><span>${rate}</span></p>
               <strong>${title}</strong>
             </div>
           </div>
