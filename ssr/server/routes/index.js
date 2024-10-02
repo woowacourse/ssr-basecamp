@@ -16,7 +16,55 @@ router.get("/", (_, res) => {
 });
 
 router.get("/now-playing", async (_, res) => {
+  const popularMovies = await loadMovies(TMDB_MOVIE_LISTS.nowPlaying);
+
+  const headerHTML = getHeader(popularMovies[0]);
+  const tabHTML = getTab(res.req.originalUrl);
+  const moviesHTML = getMovieList(popularMovies);
+
+  const template = getInitTemplate();
+  const renderedHTML = template
+    .replace("<!--${NAV_TAB_PLACEHOLDER}-->", tabHTML)
+    .replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML)
+    .replace("<!--${HEADER_ITEM_PLACEHOLDER}-->", headerHTML);
+
+  res.send(renderedHTML);
+});
+
+router.get("/popular", async (_, res) => {
   const popularMovies = await loadMovies(TMDB_MOVIE_LISTS.popular);
+
+  const headerHTML = getHeader(popularMovies[0]);
+  const tabHTML = getTab(res.req.originalUrl);
+  const moviesHTML = getMovieList(popularMovies);
+
+  const template = getInitTemplate();
+  const renderedHTML = template
+    .replace("<!--${NAV_TAB_PLACEHOLDER}-->", tabHTML)
+    .replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML)
+    .replace("<!--${HEADER_ITEM_PLACEHOLDER}-->", headerHTML);
+
+  res.send(renderedHTML);
+});
+
+router.get("/top-rated", async (_, res) => {
+  const popularMovies = await loadMovies(TMDB_MOVIE_LISTS.topRated);
+
+  const headerHTML = getHeader(popularMovies[0]);
+  const tabHTML = getTab(res.req.originalUrl);
+  const moviesHTML = getMovieList(popularMovies);
+
+  const template = getInitTemplate();
+  const renderedHTML = template
+    .replace("<!--${NAV_TAB_PLACEHOLDER}-->", tabHTML)
+    .replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML)
+    .replace("<!--${HEADER_ITEM_PLACEHOLDER}-->", headerHTML);
+
+  res.send(renderedHTML);
+});
+
+router.get("/upcoming", async (_, res) => {
+  const popularMovies = await loadMovies(TMDB_MOVIE_LISTS.upcoming);
 
   const headerHTML = getHeader(popularMovies[0]);
   const tabHTML = getTab(res.req.originalUrl);
