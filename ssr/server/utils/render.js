@@ -1,4 +1,6 @@
-export const renderMovieItems = (movieItems = []) =>
+import { TMDB_THUMBNAIL_URL, TMDB_BANNER_URL } from "../../src/constant.js";
+
+const createMovieCardListHTML = (movieItems = []) =>
   movieItems
     .map(
       ({ id, title, poster_path, vote_average }) => /*html*/ `
@@ -7,7 +9,7 @@ export const renderMovieItems = (movieItems = []) =>
           <div class="item">
             <img
               class="thumbnail"
-              src="https://media.themoviedb.org/t/p/w440_and_h660_face/${poster_path}"
+              src="${TMDB_THUMBNAIL_URL}${poster_path}"
               alt="${title}"
             />
             <div class="item-desc">
@@ -21,12 +23,12 @@ export const renderMovieItems = (movieItems = []) =>
     )
     .join("");
 
-export const renderHeader = (movieItem) => {
+const createMovieHeaderBannerHTML = (movieItem) => {
   return /*html*/ `
   <header>
   <div
     class="background-container"
-    style="background-image: url('https://image.tmdb.org/t/p/original${movieItem.backdrop_path}')"
+    style="background-image: url('${TMDB_BANNER_URL}${movieItem.backdrop_path}')"
   >
     <div class="overlay" aria-hidden="true"></div>
     <div class="top-rated-container">
@@ -47,16 +49,14 @@ export const renderHeader = (movieItem) => {
         `;
 };
 
-export const renderMovieDetailModal = (movieDetail) => {
+const createMovieDetailModalHTML = (movieDetail) => {
   return /*html*/ `
       <div class="modal-background active" id="modalBackground">
         <div class="modal">
         <button class="close-modal" id="closeModal"><img src="/assets/images/modal_button_close.png" /></button>
         <div class="modal-container">
           <div class="modal-image">
-            <img src="https://image.tmdb.org/t/p/original/${
-              movieDetail.poster_path
-            }.jpg" />
+            <img src="${TMDB_THUMBNAIL_URL}${movieDetail.poster_path}.jpg" />
           </div>
           <div class="modal-description">
             <h2>${movieDetail.title}</h2>
@@ -104,4 +104,15 @@ export const renderMovieDetailModal = (movieDetail) => {
       });
     </script>
   `;
+};
+
+export const renderTemplate = (template, moviesData, movieDetail) => {
+  const moviesHTML = createMovieCardListHTML(moviesData.results);
+  const headerHTML = createMovieHeaderBannerHTML(moviesData.results[0]);
+  const detailHTML = movieDetail ? createMovieDetailModalHTML(movieDetail) : "";
+
+  return template
+    .replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML)
+    .replace("<!--${HEADER_PLACEHOLDER}-->", headerHTML)
+    .replace("<!--${MODAL_AREA}-->", detailHTML);
 };
