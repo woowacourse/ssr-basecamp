@@ -14,7 +14,6 @@ const __dirname = path.dirname(__filename);
 
 app.use("/assets", express.static(path.join(__dirname, "../public")));
 app.use("/", movieRouter);
-// app.use('/detail', )
 
 // app.use("/members", membersRouter); // 본 미션 참고를 위한 코드이며 사전 미션에서는 사용하지 않습니다.
 

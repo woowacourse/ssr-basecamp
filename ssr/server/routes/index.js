@@ -19,6 +19,7 @@ const sendMovieDetailPage = async (req, res) => {
   res.send(renderedHTML);
 };
 
+router.get("/", sendMoviePage(await loadNowPlaying()));
 router.get("/now-playing", sendMoviePage(await loadNowPlaying()));
 router.get("/popular", sendMoviePage(await loadPopular()));
 router.get("/top-rated", sendMoviePage(await loadTopRated()));
