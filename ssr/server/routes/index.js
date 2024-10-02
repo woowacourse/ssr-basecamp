@@ -115,4 +115,33 @@ router.get("/upcoming", async (_, res) => {
   res.send(renderedHTML);
 });
 
+router.get('/detail/:id', async (req, res) => {
+  const movieId = req.params.id;
+
+  const movies = await fetchMovies(TMDB_MOVIE_LISTS.nowPlaying);
+
+  const movie = await fetchMovieDetail(movieId);
+
+  if (!movie) {
+    return res.status(404).send('영화 정보를 불러올 수 없습니다.');
+  }
+
+
+  const moviesHTML = generateMovieItemsHTML(movies);
+  const tabHTML = generateTabHTML("now-playing");
+  const modalHTML = generateMovieModalHTML(movie)
+  const templatePath = path.join(__dirname, '../../views/index.html');
+  const replacements = {
+    'MOVIE_ITEMS_PLACEHOLDER': moviesHTML,
+    'TAB_ITEMS': tabHTML,
+    'background-container': TMDB_BANNER_URL + movies[0].backdrop_path,
+    'bestMovie.title': movies[0].title,
+    'bestMovie.rate': movies[0].vote_average.toFixed(1),
+    'MODAL_AREA': modalHTML,
+  };
+
+  const renderedHTML = renderHTML(templatePath, replacements);
+
+  res.send(renderedHTML);
+});
 export default router;

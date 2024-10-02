@@ -10,3 +10,14 @@ export const fetchMovies = async (url) => {
     return [];
   }
 };
+
+export const fetchMovieDetail = async (movieId) => {
+  try {
+    const response = await fetch(`${TMDB_MOVIE_DETAIL_URL}${movieId}?language=ko-KR`, FETCH_OPTIONS);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('TMDB API 상세 정보 요청 실패:', error);
+    return null;
+  }
+};

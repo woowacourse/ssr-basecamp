@@ -45,3 +45,31 @@ export const generateTabHTML = (currentTab) => {
     .join('');
 };
 
+// 모달 HTML을 생성하는 함수
+export const generateMovieModalHTML = (movie) => {
+  const genres = movie.genres.map(genre => genre.name).join(', '); 
+  return `
+    <div class="modal-background active" id="modalBackground">
+      <div class="modal">
+        <button class="close-modal" id="closeModal">
+          <img src="/assets/images/modal_button_close.png" />
+        </button>
+        <div class="modal-container">
+          <div class="modal-image">
+            <img src="${TMDB_ORIGINAL_URL}${movie.poster_path}" alt="${movie.title}" />
+          </div>
+          <div class="modal-description">
+            <h2>${movie.title}</h2>
+            <p class="category">${movie.release_date.split('-')[0]} · ${genres}</p>
+            <p class="rate">
+              <img src="/assets/images/star_filled.png" class="star" />
+              <span>${movie.vote_average.toFixed(1)}</span>
+            </p>
+            <hr />
+            <p class="detail">${movie.overview}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+};
