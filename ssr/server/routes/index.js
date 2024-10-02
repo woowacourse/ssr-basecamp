@@ -5,13 +5,14 @@ import { fileURLToPath } from "url";
 import { getPopularMovies } from "../../src/api/index.js";
 import { renderMovieList } from "../../src/components/movieList.js";
 import { renderHeader } from "../../src/components/header.js";
+import { renderTab } from "../../src/components/tab.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const router = Router();
 
-router.get("/", async (_, res) => {
+router.get("/popular", async (_, res) => {
   const templatePath = path.join(__dirname, "../../views", "index.html");
   const popularMovies = await getPopularMovies();
   const movieList = popularMovies.results.map(({ id, title, poster_path, vote_average }) => ({
@@ -28,12 +29,14 @@ router.get("/", async (_, res) => {
   };
 
   const headerHTML = renderHeader(bestMovie);
+  const tabHTML = renderTab("popular");
   const moviesHTML = renderMovieList(movieList);
 
   const template = fs.readFileSync(templatePath, "utf-8");
   const renderedHTML = template
-    .replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML)
-    .replace("<!--${HEADER_PLACEHOLDER}-->", headerHTML);
+    .replace("<!--${HEADER_PLACEHOLDER}-->", headerHTML)
+    .replace("<!--${TAB_PLACEHOLDER}-->", tabHTML)
+    .replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML);
 
   res.send(renderedHTML);
 });
