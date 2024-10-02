@@ -4,11 +4,11 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { fetchMovies, loadMovieDetail } from "../apis/movie.js";
 import {
-  renderBestMovie,
-  renderModal,
-  renderMovieItem,
-  renderTabList,
-} from "../utils/renderHelper.js";
+  generateBestMovieHTML,
+  generateModalHTML,
+  generateMovieItemHTML,
+  generateTabListHTML,
+} from "../utils/htmlGenerator.js";
 import { CONTAINER_TAB_LIST } from "../constants.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,12 +25,15 @@ const generateMovieListHTML = async category => {
   const template = fs.readFileSync(templatePath, "utf-8");
   const renderedTabList = template.replace(
     "<!--${TAB_LIST}-->",
-    renderTabList(CONTAINER_TAB_LIST[category])
+    generateTabListHTML(CONTAINER_TAB_LIST[category])
   );
 
-  const movieListHTML = movieData.results.map(renderMovieItem).join("");
+  const movieListHTML = movieData.results.map(generateMovieItemHTML).join("");
 
-  const bestMovieHTML = renderBestMovie(movieData.results[0], renderedTabList);
+  const bestMovieHTML = generateBestMovieHTML(
+    movieData.results[0],
+    renderedTabList
+  );
 
   const renderedHTML = bestMovieHTML.replace(
     "<!--${MOVIE_ITEMS_PLACEHOLDER}-->",
@@ -79,7 +82,7 @@ router.get("/detail/:id", async (req, res) => {
     const html = await generateMovieListHTML("nowPlaying");
     const renderedHTML = html.replace(
       "<!--${MODAL_AREA}-->",
-      renderModal(movieDetailData)
+      generateModalHTML(movieDetailData)
     );
 
     res.send(renderedHTML);

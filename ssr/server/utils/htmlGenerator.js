@@ -5,7 +5,7 @@ import {
 } from "../constants.js";
 import round from "../utils/round.js";
 
-export const renderMovieItem = movie => {
+export const generateMovieItemHTML = movie => {
   const thumbnailFullUrl = TMDB_THUMBNAIL_URL + movie.poster_path;
   const url = `/detail/${movie.id}`;
 
@@ -25,7 +25,7 @@ export const renderMovieItem = movie => {
   `;
 };
 
-export const renderBestMovie = (movie, html) => {
+export const generateBestMovieHTML = (movie, html) => {
   const bannerUrl = TMDB_BANNER_URL + movie.backdrop_path;
 
   return html
@@ -34,7 +34,7 @@ export const renderBestMovie = (movie, html) => {
     .replace("${bestMovie.title}", movie.title);
 };
 
-const makeTabItemHTML = (item, isSelected) => {
+const generateTabItemHTML = (item, isSelected) => {
   if (isSelected) {
     return `
     <li>
@@ -58,9 +58,9 @@ const makeTabItemHTML = (item, isSelected) => {
   `;
 };
 
-export const renderTabList = selectedCategory => {
+export const generateTabListHTML = selectedCategory => {
   const tabItemHTML = Object.values(CONTAINER_TAB_LIST)
-    .map(tab => makeTabItemHTML(tab, tab.id === selectedCategory.id))
+    .map(tab => generateTabItemHTML(tab, tab.id === selectedCategory.id))
     .join("");
 
   return `
@@ -70,7 +70,7 @@ export const renderTabList = selectedCategory => {
   `;
 };
 
-export const renderModal = data => {
+export const generateModalHTML = data => {
   const { bannerUrl, title, releaseYear, rate, description } = data;
   return `
       <div class="modal-background active" id="modalBackground">
