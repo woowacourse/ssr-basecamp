@@ -69,7 +69,7 @@ const renderMovieItem = movie => {
         <img class="thumbnail" src="${thumbnailFullUrl}" alt="${movie.title}" />
         <div class="item-desc">
           <p class="rate">
-            <img src="path/to/star-empty-icon" class="star" />
+            <img src="../assets/images/star_empty.png" class="star" />
             <span>${Math.round(movie.vote_average * 10) / 10}</span>
           </p>
           <strong>${movie.title}</strong>
@@ -99,11 +99,8 @@ router.get("/", async (_, res) => {
     const templatePath = path.join(__dirname, "../../views", "index.html");
 
     const movieData = await fetchAllMovies();
-    const moviesHTML = `
-      <ul>
-        ${movieData.popular.results.map(renderMovieItem).join("")}
-      </ul>
-    `;
+    const moviesHTML = movieData.popular.results.map(renderMovieItem).join("");
+
     const template = fs.readFileSync(templatePath, "utf-8");
     const bestMovieHTML = renderBestMovie(
       movieData.popular.results[0],
