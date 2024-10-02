@@ -1,6 +1,6 @@
 import { TMDB_BANNER_URL } from "../../server/Constant.js";
 
-const TopRatedMovie = (movie) => {
+const TopRatedMovieView = (movie) => {
   const bannerUrl = TMDB_BANNER_URL + movie.backdrop_path;
 
   return /* html */ `
@@ -19,8 +19,8 @@ const TopRatedMovie = (movie) => {
         <button class="primary detail">자세히 보기</button>
       </div>
     </div>
-  </div>;
+  </div>
   `;
 };
 
-export default TopRatedMovie;
+export default TopRatedMovieView;
