@@ -70,4 +70,23 @@ router.get("/upcoming", async (_, res) => {
   await routerMovieList(res, "upcoming");
 });
 
+router.get("/detail/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const movieDetailData = await loadMovieDetail(id);
+
+    //html 생성
+    const html = await generateMovieListHTML("nowPlaying");
+    const renderedHTML = html.replace(
+      "<!--${MODAL_AREA}-->",
+      renderModal(movieDetailData)
+    );
+
+    res.send(renderedHTML);
+  } catch (error) {
+    console.error("Error rendering page:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 export default router;
