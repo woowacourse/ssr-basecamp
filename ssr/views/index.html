@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../assets/styles/modal.css" />
     <link rel="stylesheet" href="../assets/styles/tab.css" />
     <link rel="stylesheet" href="../assets/styles/thumbnail.css" />
-    <script src="./"></script>
+    
     <title>영화 리뷰</title>
   </head>
   <body>
@@ -31,40 +31,13 @@
       </header>
       <div class="container">
         <ul class="tab">
-          <li>
-            <a href="/now-playing">
-              <div class="tab-item">
-                <h3>상영 중</h3>
-              </div></a
-            >
-          </li>
-          <li>
-            <a href="/popular"
-              ><div class="tab-item">
-                <h3>인기순</h3>
-              </div></a
-            >
-          </li>
-          <li>
-            <a href="/top-rated"
-              ><div class="tab-item">
-                <h3>평점순</h3>
-              </div></a
-            >
-          </li>
-          <li>
-            <a href="/upcoming"
-              ><div class="tab-item">
-                <h3>상영 예정</h3>
-              </div></a
-            >
-          </li>
+          ${TAB_ITEMS}
         </ul>
         <main>
           <section>
             <h2>지금 인기 있는 영화</h2>
             <ul class="thumbnail-list">
-              <!--${MOVIE_ITEMS_PLACEHOLDER}-->
+              ${MOVIE_ITEMS_PLACEHOLDER}
             </ul>
           </section>
         </main>
@@ -75,6 +48,7 @@
         <p><img src="../assets/images/woowacourse_logo.png" width="180" /></p>
       </footer>
     </div>
-    <!--${MODAL_AREA}-->
+    ${MODAL_AREA}
   </body>
+  <script src="../assets/scripts/index.js"></script>
 </html>
