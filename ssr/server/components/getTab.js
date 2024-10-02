@@ -1,6 +1,6 @@
 export default function getTab(href) {
   const tabTemplate = ({ href: curHref, name }) => `<li>
-            <a href="${href}">
+            <a href="${curHref}">
               <div class="tab-item ${curHref === href ? "selected" : ""}">
                 <h3>${name}</h3>
               </div></a >
