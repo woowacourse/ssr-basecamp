@@ -1,6 +1,6 @@
 import { TMDB_THUMBNAIL_URL } from "../../server/Constant.js";
 
-const MovieView = (movie) => {
+const MovieItemView = (movie) => {
   return `<li>
     <div class="item">
       <img class="thumbnail" src="${`${TMDB_THUMBNAIL_URL}${movie.poster_path}`}" alt="${movie.title}" />
@@ -16,4 +16,4 @@ const MovieView = (movie) => {
 `;
 };
 
-export default MovieView;
+export default MovieItemView;

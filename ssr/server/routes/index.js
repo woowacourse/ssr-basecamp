@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { FETCH_OPTIONS, TMDB_MOVIE_LISTS } from "../Constant.js";
-import MovieView from "../../views/movie/MovieView.js";
+import MovieItemView from "../../views/movieItem/MovieItemView.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,7 +21,7 @@ router.get("/", async (_, res) => {
   const templatePath = path.join(__dirname, "../../views", "index.html");
   const movies = await loadMovies();
 
-  const moviesHTML = movies.map((movie) => MovieView(movie)).join("");
+  const moviesHTML = movies.map((movie) => MovieItemView(movie)).join("");
 
   const template = fs.readFileSync(templatePath, "utf-8");
   const renderedHTML = template.replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML);
