@@ -21,12 +21,32 @@ export const FETCH_OPTIONS = {
   },
 };
 
-// module.exports({
-//   BASE_URL,
-//   TMDB_BANNER_URL,
-//   TMDB_MOVIE_DETAIL_URL,
-//   TMDB_MOVIE_LISTS,
-//   TMDB_ORIGINAL_URL,
-//   TMDB_MOVIE_DETAIL_URL,
-//   FETCH_OPTIONS,
-// });
+export const CATEGORIES = {
+  nowPlaying: "상영 중",
+  popular: "인기순",
+  topRated: "평점순",
+  upcoming: "상영 예정",
+};
+
+export const CONTAINER_TAB_LIST = {
+  nowPlaying: {
+    id: "nowPlaying",
+    url: "now-playing",
+    name: "상영 중",
+  },
+  popular: {
+    id: "popular",
+    url: "popular",
+    name: "인기순",
+  },
+  topRated: {
+    id: "topRated",
+    url: "top-rated",
+    name: "평점순",
+  },
+  upcoming: {
+    id: "upcoming",
+    url: "upcoming",
+    name: "상영 예정",
+  },
+};
