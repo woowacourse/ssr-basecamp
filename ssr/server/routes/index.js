@@ -1,19 +1,57 @@
 import { Router } from "express";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { renderMoviePage } from "../src/render/renderMoviePage.js";
+import { renderMovieModal } from "../src/render/renderMovieModal.js";
+import {
+  fetchMoviesNowPlaying,
+  fetchMoviesPopular,
+  fetchMoviesTopRated,
+  fetchMoviesUpcoming,
+  fetchMovieDetail,
+} from "../src/apis/movie.js";
 
 const router = Router();
 
-router.get("/", (_, res) => {
-  const templatePath = path.join(__dirname, "../../views", "index.html");
-  const moviesHTML = "<p>들어갈 본문 작성</p>";
+router.get("/", async (_, res) => {
+  const movies = await fetchMoviesNowPlaying();
+  const renderedHTML = renderMoviePage(movies, "/");
 
-  const template = fs.readFileSync(templatePath, "utf-8");
-  const renderedHTML = template.replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML);
+  res.send(renderedHTML);
+});
+
+router.get("/now-playing", async (_, res) => {
+  const movies = await fetchMoviesNowPlaying();
+  const renderedHTML = renderMoviePage(movies, "now-playing");
+
+  res.send(renderedHTML);
+});
+
+router.get("/popular", async (_, res) => {
+  const movies = await fetchMoviesPopular();
+  const renderedHTML = renderMoviePage(movies, "popular");
+
+  res.send(renderedHTML);
+});
+
+router.get("/top-rated", async (_, res) => {
+  const movies = await fetchMoviesTopRated();
+  const renderedHTML = renderMoviePage(movies, "top-rated");
+
+  res.send(renderedHTML);
+});
+
+router.get("/upcoming", async (_, res) => {
+  const movies = await fetchMoviesUpcoming();
+  const renderedHTML = renderMoviePage(movies, "upcoming");
+
+  res.send(renderedHTML);
+});
+
+router.get("/detail/:movieId", async (req, res) => {
+  const movieId = req.params.movieId;
+
+  const popularMovies = await fetchMoviesPopular();
+  const movieDetail = await fetchMovieDetail(movieId);
+  const renderedHTML = renderMovieModal(popularMovies, movieDetail);
 
   res.send(renderedHTML);
 });
