@@ -1,4 +1,4 @@
-export const renderHeader = ({ title, background, rate }) => /*html*/ `
+export const renderHeader = ({ id, title, background, rate }) => /*html*/ `
   <header>
     <div class="background-container" style="background-image: url('https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${background}')">
       <div class="overlay" aria-hidden="true"></div>
@@ -10,7 +10,7 @@ export const renderHeader = ({ title, background, rate }) => /*html*/ `
             <span class="rate-value">${rate}</span>
           </div>
           <div class="title">${title}</div>
-          <button class="primary detail">자세히 보기</button>
+          <button class="primary detail" onClick="window.location='/detail/${id}'">자세히 보기</button>
         </div>
       </div>
     </div>
