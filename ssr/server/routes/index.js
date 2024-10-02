@@ -82,7 +82,7 @@ router.get("/upcoming", async (_, res) => {
 router.get("/detail/:movieId", async (req, res) => {
   const { movieId } = req.params;
 
-  const popularMovies = await loadMovies(TMDB_MOVIE_LISTS.popular);
+  const popularMovies = await loadMovies(TMDB_MOVIE_LISTS.nowPlaying);
   const movieDetail = await loadMovieDetail(movieId);
 
   const headerHTML = getHeader(popularMovies[0]);

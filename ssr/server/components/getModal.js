@@ -9,9 +9,9 @@ const round = (value, decimals = 0) => {
 export default function getModal(movieDetail) {
   return `<div class="modal-background active" id="modalBackground">
       <div class="modal">
-        <button class="close-modal" id="closeModal">
+        <a class="close-modal" id="closeModal" href="/now-playing">
           <img src="/assets/images/modal_button_close.png" />
-        </button>
+        </a>
         <div class="modal-container">
           <div class="modal-image">
             <img src="${TMDB_ORIGINAL_URL + movieDetail.poster_path}" />
