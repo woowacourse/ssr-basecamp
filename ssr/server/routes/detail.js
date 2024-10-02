@@ -1,16 +1,5 @@
 import { Router } from "express";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-import { fetchMovie, fetchMovies } from "../utils/tmdb.js";
-import {
-  renderMovieItems,
-  renderHeader,
-  renderMovieDetailModal,
-} from "../utils/render.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { handleMovieRequest } from "../controller/handleMovieRequest.js";
 
 const router = Router();
 
@@ -21,41 +10,17 @@ const pageTypeMapping = {
   upcoming: "UPCOMING",
 };
 
-const handleMovieDetailRequest = async (req, res) => {
-  try {
-    const movieId = req.params.id;
-    const previousPage = req.get("Referrer") || req.header("Referrer");
+router.get("/:id", (req, res) => {
+  const movieId = req.params.id;
+  const previousPage = req.get("Referrer") || req.header("Referrer");
 
-    const pagePathSegment = previousPage.split("/").at(-1);
+  const pagePathSegment = previousPage.split("/").at(-1);
 
-    const movieListType = Object.keys(pageTypeMapping).includes(pagePathSegment)
-      ? pageTypeMapping[pagePathSegment]
-      : "NOW_PLAYING";
+  const movieListType = Object.keys(pageTypeMapping).includes(pagePathSegment)
+    ? pageTypeMapping[pagePathSegment]
+    : "NOW_PLAYING";
 
-    const [movieDetail, moviesData] = await Promise.all([
-      fetchMovie(movieId),
-      fetchMovies(movieListType),
-    ]);
-
-    const templatePath = path.join(__dirname, "../../views", "index.html");
-
-    const detailHTML = renderMovieDetailModal(movieDetail);
-    const moviesHTML = renderMovieItems(moviesData.results);
-    const headerHTML = renderHeader(moviesData.results[0]);
-
-    const template = fs.readFileSync(templatePath, "utf-8");
-    const renderedHTML = template
-      .replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML)
-      .replace("<!--${HEADER_PLACEHOLDER}-->", headerHTML)
-      .replace("<!--${MODAL_AREA}-->", detailHTML);
-
-    res.send(renderedHTML);
-  } catch (error) {
-    console.error(`Error fetching movie detail:`, error);
-    res.status(500).send(`Error fetching movie detail`);
-  }
-};
-
-router.get("/:id", handleMovieDetailRequest);
+  handleMovieRequest(res, movieListType, movieId);
+});
 
 export default router;
