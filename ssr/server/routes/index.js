@@ -35,10 +35,9 @@ const createMoviesHTML = (movies) => {
   );
 };
 
-router.get("/now-playing", async (_, res) => {
-  const movies = await loadNowPlaying();
+const renderMoviePage = (movies) => async (_, res) => {
   const moviesParsed = createMoviesHTML(movies);
-  console.log(movies[0]);
+
   const bestMovieItem = movies[0];
   const moviesHTML = moviesParsed.join("");
   const renderedHTML = template
@@ -51,31 +50,11 @@ router.get("/now-playing", async (_, res) => {
     .replace("${bestMovie.title}", bestMovieItem.title);
 
   res.send(renderedHTML);
-});
+};
 
-router.get("/popular", async (_, res) => {
-  const movies = await loadPopular();
-  const moviesHTML = createMoviesHTML(movies);
-  console.log(movies);
-  const renderedHTML = template.replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML);
-
-  res.send(renderedHTML);
-});
-
-router.get("/top-rated", async (_, res) => {
-  const movies = await loadTopRated();
-  const moviesHTML = createMoviesHTML(movies);
-  const renderedHTML = template.replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML);
-
-  res.send(renderedHTML);
-});
-
-router.get("/upcoming", async (_, res) => {
-  const movies = await loadUpcoming();
-  const moviesHTML = createMoviesHTML(movies);
-  const renderedHTML = template.replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML);
-
-  res.send(renderedHTML);
-});
+router.get("/now-playing", renderMoviePage(await loadNowPlaying()));
+router.get("/popular", renderMoviePage(await loadPopular()));
+router.get("/top-rated", renderMoviePage(await loadTopRated()));
+router.get("/upcoming", renderMoviePage(await loadUpcoming()));
 
 export default router;
