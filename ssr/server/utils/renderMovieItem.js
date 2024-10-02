@@ -13,7 +13,7 @@ const renderMovieItem = (movie) => {
         <div class="item-desc">
           <p class="rate">
             <img src=${StarEmptyImgSrc} class="star" />
-            <span>${movie.vote_average}</span>
+            <span>${movie.vote_average.toFixed(1)}</span>
           </p>
           <strong>${movie.title}</strong>
         </div>
