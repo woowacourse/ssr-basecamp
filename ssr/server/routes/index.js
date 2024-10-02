@@ -20,8 +20,8 @@ export const TMDB_MOVIE_LISTS = {
   upcoming: BASE_URL + '/upcoming?language=ko-KR&page=1',
 };
 
-const fetchMovieList = async (url) => {
-  const response = await fetch(TMDB_MOVIE_LISTS.nowPlaying, {
+const fetchMovieList = async (type) => {
+  const response = await fetch(TMDB_MOVIE_LISTS[type ?? 'nowPlaying'], {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -55,27 +55,76 @@ const generateMoviesSection = (movieList) => `
   </section>
 `;
 
-router.get('/', async (_, res) => {
+const renderHTML = (movies) => {
   const templatePath = path.join(__dirname, '../../views', 'index.html');
-
-  const movies = await fetchMovieList();
 
   const moviesHTML = generateMoviesSection(movies.results);
 
   const template = fs.readFileSync(templatePath, 'utf-8');
-  let renderedHTML = template.replace('<!--${MOVIE_ITEMS_PLACEHOLDER}-->', moviesHTML);
 
-  renderedHTML = renderedHTML.replace('${bestMovie.title}', movies.results[0].title);
-  renderedHTML = renderedHTML.replace(
-    '${bestMovie.rate}',
-    movies.results[0].vote_average.toFixed(1)
-  );
-  renderedHTML = renderedHTML.replace(
-    '${background-container}',
-    `${TMDB_BANNER_URL}/${movies.results[0].backdrop_path}`
-  );
+  return template
+    .replace('<!--${MOVIE_ITEMS_PLACEHOLDER}-->', moviesHTML)
+    .replace('${bestMovie.title}', movies.results[0].title)
+    .replace('${bestMovie.rate}', movies.results[0].vote_average.toFixed(1))
+    .replace('${background-container}', `${TMDB_BANNER_URL}/${movies.results[0].backdrop_path}`);
+};
 
-  res.send(renderedHTML);
+router.get('/', async (_, res) => {
+  const movies = await fetchMovieList();
+
+  res.send(renderHTML(movies));
+});
+
+router.get('/now-playing', async (_, res) => {
+  const movies = await fetchMovieList('nowPlaying');
+
+  res.send(renderHTML(movies));
+});
+
+router.get('/popular', async (_, res) => {
+  const movies = await fetchMovieList('popular');
+
+  res.send(renderHTML(movies));
+});
+
+router.get('/top-rated', async (_, res) => {
+  const movies = await fetchMovieList('topRated');
+
+  res.send(renderHTML(movies));
+});
+
+router.get('/upcoming', async (_, res) => {
+  const movies = await fetchMovieList('upcoming');
+
+  res.send(renderHTML(movies));
+});
+
+const fetchMovieItem = async (id) => {
+  const response = await fetch(`${BASE_URL}/${id}?language=ko-KR`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
+    },
+  });
+
+  return await response.json();
+};
+
+router.get('/detail/:id', async (req, res) => {
+  const movieId = 238;
+
+  const movieDetails = await fetchMovieItem(movieId);
+
+  console.log(movieDetails);
+
+  // const templatePath = path.join(__dirname, '../../views', 'index.html');
+  // let template = fs.readFileSync(templatePath, 'utf-8');
+
+  // const movies = await fetchMovieList();
+  // const moviesHTML = generateMoviesSection(movies.results);
+
+  // res.send(renderedHTML);
 });
 
 export default router;
