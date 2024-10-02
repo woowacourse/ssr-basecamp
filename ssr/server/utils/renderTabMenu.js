@@ -4,7 +4,7 @@ const renderTabMenu = (currentEndpoint) => {
   return TAB_LIST.map((tab) => {
     return /* html */ `
       <li>
-        <a href='/${tab.link}'>
+        <a href='/${tab.name}'>
           <div class="tab-item ${currentEndpoint === tab.name ? 'selected' : ''}">
             <h3>${tab.description}</h3>
           </div>
