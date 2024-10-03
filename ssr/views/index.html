@@ -81,5 +81,20 @@
       </footer>
     </div>
     <!--${MODAL_AREA}-->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const tabItems = document.querySelectorAll('.tab-item');
+
+        tabItems.forEach((tab) => {
+          tab.addEventListener('click', (event) => {
+            event.preventDefault();
+
+            tabItems.forEach((item) => item.classList.remove('selected'));
+
+            tab.classList.add('selected');
+          });
+        });
+      });
+    </script>
   </body>
 </html>
