@@ -4,8 +4,8 @@
   "description": "SSR 렌더링으로 영화 목록 불러오기",
   "main": "server/index.js",
   "scripts": {
-    "start": "NODE_TLS_REJECT_UNAUTHORIZED=0 node server/index.js",
-    "dev": "NODE_TLS_REJECT_UNAUTHORIZED=0 nodemon server/index.js --watch"
+    "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 node server/index.js",
+    "dev": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nodemon server/index.js --watch"
   },
   "type": "module",
   "dependencies": {
@@ -13,7 +13,8 @@
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.6",
-    "dotenv": "^16.0.0"
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.0",
+    "nodemon": "^3.1.6"
   }
 }
