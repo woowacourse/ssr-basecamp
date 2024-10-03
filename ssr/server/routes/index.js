@@ -2,8 +2,12 @@ import { Router } from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { fetchMovies, renderMovieItem } from './utils.js';
-import { TMDB_BANNER_URL, TMDB_MOVIE_LISTS } from '../src/constant.js';
+import { fetchMovies, renderMovieItem, renderDetailModal } from './utils.js';
+import {
+  TMDB_BANNER_URL,
+  TMDB_MOVIE_LISTS,
+  TMDB_MOVIE_DETAIL_URL,
+} from '../src/constant.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -125,6 +129,35 @@ router.get('/upcoming', async (_, res) => {
     .replace('${bestMovie.rate}', movieList[0].vote_average)
     .replace('${bestMovie.title}', movieList[0].title)
     .replace('${TAB_UPCOMING}', 'selected');
+
+  res.send(renderedHTML);
+});
+
+router.get('/detail/:id', async (req, res) => {
+  const templatePath = path.join(__dirname, '../../views', 'index.html');
+  const movieId = req.params.id;
+
+  const responseFetchMovies = await fetchMovies(TMDB_MOVIE_LISTS.NOW_PLAYING);
+  const movieList = responseFetchMovies.results;
+
+  const moviesHTML = renderMovieItem(movieList).join('');
+
+  const movieDetail = await fetchMovies(
+    `${TMDB_MOVIE_DETAIL_URL}/${movieId}?language=ko-KR`
+  );
+
+  const template = fs.readFileSync(templatePath, 'utf-8');
+
+  const renderedHTML = template
+    .replace('<!--${MOVIE_ITEMS_PLACEHOLDER}-->', moviesHTML)
+    .replace(
+      '${background-container}',
+      `${TMDB_BANNER_URL}${movieList[0].backdrop_path}`
+    )
+    .replace('${bestMovie.rate}', movieList[0].vote_average)
+    .replace('${bestMovie.title}', movieList[0].title)
+    .replace('${TAB_NOW_PLAYING}', 'selected')
+    .replace('<!--${MODAL_AREA}-->', renderDetailModal(movieDetail));
 
   res.send(renderedHTML);
 });
