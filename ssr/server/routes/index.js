@@ -2,39 +2,54 @@ import { Router } from "express";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { fetchMovies } from "../../src/fetchMovies.js";
-import { TMDB_MOVIE_LISTS } from "../../src/constant.js";
+import { fetchMovieDetail, fetchMovies } from "../../src/fetchMovies.js";
+import {
+  renderDetailModal,
+  renderMovieItems,
+  renderTabs,
+} from "../../views/template.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const router = Router();
 
-export const getFormattedMovies = async (endpoint) => {
-  const movieData = await fetchMovies(endpoint);
-  const formattedMovieData = movieData.results.map((movie) => ({
-    id: movie.id,
-    title: movie.title,
-    thumbnail: movie.poster_path,
-    rate: movie.vote_average,
-    background: movie.backdrop_path,
-  }));
-
-  return formattedMovieData;
+const getMovieList = async (category) => {
+  const movieData = await fetchMovies(category);
+  return parseMovies(movieData);
 };
 
-const rendermoviesTemplate = (moviesData, endpoint) => {
-  const bestMovieItem = moviesData[0];
-  const moviesHTML = getMoviesHTMLTemplate(moviesData).join("");
-  const tabsHTML = getTabsHTMLTemplate(endpoint).join("");
+const getMovieDetail = async (movieId) => {
+  const movieDetailData = await fetchMovieDetail(movieId);
+  return parseMovieDetail(movieDetailData);
+};
 
-  console.log("tabsHTML", tabsHTML);
+const renderMoviesPage = async (category) => {
+  const movieList = await getMovieList(category);
+  const templatePath = path.join(__dirname, "../../views", "index.html");
+  let template = fs.readFileSync(templatePath, "utf-8");
+  return renderMoviesTemplate(template, movieList, category);
+};
+
+const renderMoviesDetailPage = async (category, movieId) => {
+  const movieList = await getMovieList(category);
+  const movieDetail = await getMovieDetail(movieId);
 
   const templatePath = path.join(__dirname, "../../views", "index.html");
   let template = fs.readFileSync(templatePath, "utf-8");
+  template = renderMoviesTemplate(template, movieList, category);
+  template = renderModalTemplate(template, movieDetail);
+
+  return template;
+};
+
+export const renderMoviesTemplate = (template, movieList, category) => {
+  const bestMovieItem = movieList[0];
+  const moviesHTML = renderMovieItems(movieList).join("");
+  const tabsHTML = renderTabs(category).join("");
 
   template = template.replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML);
-  template = template.replace(" <!--${TABS_PLACEHOLDER}-->", tabsHTML);
+  template = template.replace("<!--${TABS_PLACEHOLDER}-->", tabsHTML);
   template = template.replace(
     "${background-container}",
     "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/" +
@@ -46,61 +61,58 @@ const rendermoviesTemplate = (moviesData, endpoint) => {
   return template;
 };
 
-export const getMoviesHTMLTemplate = (movieItems = []) =>
-  movieItems.map(
-    ({ id, title, thumbnail, rate }) => /*html*/ `
-      <li>
-      <a href="/detail/${id}">
-        <div class="item">
-          <img
-            class="thumbnail"
-            src="https://media.themoviedb.org/t/p/w440_and_h660_face/${thumbnail}"
-            alt="${title}"
-          />
-          <div class="item-desc">
-            <p class="rate"><img src="../images/star_empty.png" class="star" /><span>${rate}</span></p>
-            <strong>${title}</strong>
-          </div>
-        </div>
-      </a>
-    </li>
-    `
+export const renderModalTemplate = (template, movieDetailItem) => {
+  return template.replace(
+    "<!--${MODAL_AREA}-->",
+    renderDetailModal(movieDetailItem)
   );
+};
+
+export const parseMovies = async (movieData) => {
+  const formattedMovieData = movieData.results.map((movie) => ({
+    id: movie.id,
+    title: movie.title,
+    thumbnail: movie.poster_path,
+    rate: movie.vote_average,
+    background: movie.backdrop_path,
+  }));
+
+  return formattedMovieData;
+};
+
+export const parseMovieDetail = async (movie) => {
+  return {
+    id: movie.id,
+    title: movie.title,
+    thumbnail: movie.poster_path,
+    releaseYear: movie.release_date,
+    genres: movie.genres.map((genre) => genre.name),
+    description: movie.overview,
+    rate: movie.vote_average,
+  };
+};
 
 const handleMovieRoute = async (res, category) => {
-  const endpoint = TMDB_MOVIE_LISTS[category];
   try {
-    const movieData = await getFormattedMovies(endpoint);
-    const moviesHTML = rendermoviesTemplate(movieData, category);
-
-    res.send(moviesHTML);
+    let template = await renderMoviesPage(category);
+    res.send(template);
   } catch (error) {
     console.error("Error rendering page:", error);
     res.status(500).send("Internal Server Error");
   }
 };
 
-const getTabsHTMLTemplate = (selectedCategory) => {
-  const categories = {
-    NOW_PLAYING: "상영 중",
-    POPULAR: "인기순",
-    TOP_RATED: "평점순",
-    UPCOMING: "상영 예정",
-  };
-
-  return Object.entries(categories).map((category) => {
-    const isSelected = selectedCategory === category[0] ? "selected" : "";
-    const href = `/${category[0].toLowerCase().replace("_", "-")}`;
-
-    return (
-      /*html*/
-      `<li>
- <a href="${href}">
-   <div class="tab-item ${isSelected}"><h3>${category[1]}</h3></div>
- </a>
-</li>`
+const handleDetailRoute = async (res, movieId) => {
+  try {
+    const moviesPageTemplate = await renderMoviesDetailPage(
+      "NOW_PLAYING",
+      movieId
     );
-  });
+    res.send(moviesPageTemplate);
+  } catch (error) {
+    console.error("Error rendering page:", error);
+    res.status(500).send("Internal Server Error");
+  }
 };
 
 router.get("/", async (_, res) => handleMovieRoute(res, "NOW_PLAYING"));
@@ -110,5 +122,10 @@ router.get("/now-playing", async (_, res) =>
 router.get("/popular", async (_, res) => handleMovieRoute(res, "POPULAR"));
 router.get("/top-rated", async (_, res) => handleMovieRoute(res, "TOP_RATED"));
 router.get("/upcoming", async (_, res) => handleMovieRoute(res, "UPCOMING"));
+
+router.get("/detail/:id", async (req, res) => {
+  const { id } = req.params;
+  handleDetailRoute(res, id);
+});
 
 export default router;
