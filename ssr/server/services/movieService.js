@@ -1,17 +1,43 @@
 import fetch from "node-fetch";
-import { API_MOVIE_ENDPOINTS, FETCH_OPTIONS } from "../config.js";
+import { API_MOVIE_DETAIL_ENDPOINT, API_MOVIE_ENDPOINTS, FETCH_OPTIONS } from "../config.js";
+
+async function handleFetchError(response) {
+  if (!response.ok) {
+    throw new Error(`HTTP 요청에 실패했습니다. : ${response.status}`);
+  }
+  return await response.json();
+}
+
+function handleApiError(error, errorMessage) {
+  console.error(errorMessage, error);
+  return [];
+}
 
 export async function getMovies(endpoint) {
   try {
-    const url = `${API_MOVIE_ENDPOINTS[endpoint]}?language=ko-KR&page=1`;
+    const params = new URLSearchParams({
+      language: 'ko-KR',
+      page: '1'
+    });
+    const url = `${API_MOVIE_ENDPOINTS[endpoint]}?${params}`;
     const response = await fetch(url, FETCH_OPTIONS);
-    if (!response.ok) {
-      throw new Error(`HTTP 요청에 실패했습니다. : ${response.status}`);
-    }
-    const data = await response.json();
+    const data = await handleFetchError(response);
     return data.results;
   } catch (error) {
-    console.error("영화 목록을 불러오는데 실패했습니다. :", error);
-    return [];
+    return handleApiError(error, "영화 목록을 불러오는데 실패했습니다. :");
+  }
+}
+
+export async function getMovieDetail(id) {
+  try {
+    const params = new URLSearchParams({
+      language: 'ko-KR'
+    });
+    const url = `${API_MOVIE_DETAIL_ENDPOINT}${id}?${params}`;
+    const response = await fetch(url, FETCH_OPTIONS);
+    const data = await handleFetchError(response);
+    return data;
+  } catch (error) {
+    return handleApiError(error, "영화 상세 정보를 불러오는데 실패했습니다. :");
   }
 }
