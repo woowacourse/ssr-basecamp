@@ -1,13 +1,15 @@
 import { TMDB_RESOURCE, ROUTE, MOVIE_LIST_TYPE } from "../constant.js";
 
-export const generateMovieList = (moviesData) => {
-  const movieListHTML = moviesData.map((movie) => generateMovieItem(movie));
+export const generateMovieList = (moviesData, listType) => {
+  const movieListHTML = moviesData.map((movie) =>
+    generateMovieItem(movie, listType)
+  );
 
   return movieListHTML.join("");
 };
 
-export const generateMovieItem = (movie) => {
-  const movieDetailPath = ROUTE.MOVIE_DETAIL(movie.id);
+export const generateMovieItem = (movie, listType) => {
+  const movieDetailPath = ROUTE.MOVIE_DETAIL(movie.id, listType);
   const thumbnailURL = TMDB_RESOURCE.IMAGE.THUMBNAIL_URL + movie.poster_path;
   const averageScore = movie.vote_average.toFixed(1);
 
@@ -30,8 +32,8 @@ export const generateMovieItem = (movie) => {
   `;
 };
 
-export const generateTopRatedContainer = (movie) => {
-  const movieDetailPath = ROUTE.MOVIE_DETAIL(movie.id);
+export const generateTopRatedContainer = (movie, listType) => {
+  const movieDetailPath = ROUTE.MOVIE_DETAIL(movie.id, listType);
   const bannerURL = TMDB_RESOURCE.IMAGE.BANNER_URL + movie.backdrop_path;
   const averageScore = movie.vote_average.toFixed(1);
 

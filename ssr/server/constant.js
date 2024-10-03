@@ -26,7 +26,8 @@ export const ROUTE = {
     TOP_RATED: "/top-rated",
     UPCOMING: "/upcoming",
   },
-  MOVIE_DETAIL: (movieId) => `/detail/${movieId}`,
+  MOVIE_DETAIL: (movieId, listType) =>
+    `/detail/${movieId}?listType=${listType}`,
 };
 
 export const MOVIE_LIST_TYPE = {

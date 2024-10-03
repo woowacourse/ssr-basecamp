@@ -20,9 +20,9 @@ const renderMovieListHTML = (
   moviesData,
   listType = MOVIE_LIST_TYPE.NOW_PLAYING.TYPE
 ) => {
-  const topRatedMovieHTML = generateTopRatedContainer(moviesData[0]);
+  const topRatedMovieHTML = generateTopRatedContainer(moviesData[0], listType);
   const movieListTabHTML = generateMovieListTabHTML(listType);
-  const movieListHTML = generateMovieList(moviesData);
+  const movieListHTML = generateMovieList(moviesData, listType);
 
   const templatePath = path.join(__dirname, "../../views", "index.html");
   const template = fs.readFileSync(templatePath, "utf-8");
