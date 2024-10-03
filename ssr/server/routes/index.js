@@ -43,16 +43,54 @@ const getBannerHTML = async () => {
     </header>
     `;
 };
+
+const getMoviesHTML = async (category) => {
+  const movies = await fetchMovies[category]();
+  return /*html*/ `
+    ${movies.results
+      .map(
+        ({
+          id,
+          title,
+          vote_average: rate,
+          poster_path: thumbnailPath,
+        }) => /*html*/ `
+        <li>
+          <a href="/detail/${id}">
+            <div class="item">
+              <img class="thumbnail" src=${
+                TMDB_THUMBNAIL_URL + '/' + thumbnailPath
+              } alt=${title} />
+              <div class="item-desc">
+                <p class="rate">
+                  <img src="../assets/images/star_empty.png" class="star" />
+                  <span>${rate.toFixed(1)}</span>
+                </p>
+                <strong>${title}</strong>
+              </div>
+            </div>
+          </a>
+        </li>  
+      `
+      )
+      .join('\n')}
+  `;
+};
+
 const placeholders = {
   banner: '<!-- ${BANNER_PLACEHOLDER} -->',
+  movies: '<!-- ${MOVIE_ITEMS_PLACEHOLDER} -->',
 };
+
 router.get('/', async (_, res) => {
   const templatePath = path.join(__dirname, '../../views', 'index.html');
   const bannerHTML = await getBannerHTML();
+  const moviesHTML = await getMoviesHTML('popular');
 
   const template = fs.readFileSync(templatePath, 'utf-8');
   const renderedHTML = template
     .replace(placeholders.banner, bannerHTML)
+    .replace(placeholders.movies, moviesHTML);
 
   res.send(renderedHTML);
 });
