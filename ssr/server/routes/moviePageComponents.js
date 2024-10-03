@@ -1,7 +1,10 @@
-import { TMDB_BANNER_URL, TMDB_THUMBNAIL_URL } from "../config.js";
+import {TMDB_BANNER_URL, TMDB_THUMBNAIL_URL} from '../config.js';
 
-export const getMoviesHTML = (movies) => movies.reduce((acc, movie) => {
-    return acc + `
+export const getMoviesHTML = movies =>
+  movies.reduce((acc, movie) => {
+    return (
+      acc +
+      `
       <li>
         <div class="item">
           <img
@@ -14,10 +17,11 @@ export const getMoviesHTML = (movies) => movies.reduce((acc, movie) => {
             <strong>${movie.title}</strong>
           </div>
         </div>
-      </li>`;
+      </li>`
+    );
   }, '');
 
-  export const getBestMovieHTML = (movie) => `
+export const getBestMovieHTML = movie => `
     <div class="background-container" style="background-image: url('${TMDB_BANNER_URL}${movie.backdrop_path}')">
       <div class="overlay" aria-hidden="true"></div>
       <div class="top-rated-container">
@@ -33,7 +37,7 @@ export const getMoviesHTML = (movies) => movies.reduce((acc, movie) => {
       </div>
     </div>`;
 
-  export const getTabHTML = (currentPath) => `
+export const getTabHTML = currentPath => `
   <ul class="tab">
       <li>
         <a href="/now-playing">
@@ -64,4 +68,4 @@ export const getMoviesHTML = (movies) => movies.reduce((acc, movie) => {
         </a>
       </li>
     </ul>
-  `
+  `;
