@@ -14,10 +14,15 @@
   <body>
     <div id="wrap">
       <header>
-        <div class="background-container" style="background-image: url('${background-container}')">
+        <div
+          class="background-container"
+          style="background-image: url('${background-container}')"
+        >
           <div class="overlay" aria-hidden="true"></div>
           <div class="top-rated-container">
-            <h1 class="logo"><img src="../assets/images/logo.png" alt="MovieList" /></h1>
+            <h1 class="logo">
+              <img src="../assets/images/logo.png" alt="MovieList" />
+            </h1>
             <div class="top-rated-movie">
               <div class="rate">
                 <img src="../assets/images/star_empty.png" class="star" />
@@ -33,28 +38,28 @@
         <ul class="tab">
           <li>
             <a href="/now-playing">
-              <div class="tab-item">
+              <div class="tab-item ${isSelectedNowPlaying}">
                 <h3>상영 중</h3>
               </div></a
             >
           </li>
           <li>
             <a href="/popular"
-              ><div class="tab-item">
+              ><div class="tab-item ${isSelectedPopular}">
                 <h3>인기순</h3>
               </div></a
             >
           </li>
           <li>
             <a href="/top-rated"
-              ><div class="tab-item">
+              ><div class="tab-item ${isSelectedTopRated}">
                 <h3>평점순</h3>
               </div></a
             >
           </li>
           <li>
             <a href="/upcoming"
-              ><div class="tab-item">
+              ><div class="tab-item ${isSelectedUpcoming}">
                 <h3>상영 예정</h3>
               </div></a
             >
@@ -64,7 +69,7 @@
           <section>
             <h2>지금 인기 있는 영화</h2>
             <ul class="thumbnail-list">
-              <!--${MOVIE_ITEMS_PLACEHOLDER}-->
+              ${MOVIE_ITEMS_PLACEHOLDER}
             </ul>
           </section>
         </main>
