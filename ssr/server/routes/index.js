@@ -8,8 +8,9 @@ const __dirname = path.dirname(__filename);
 
 const router = Router();
 
-import { renderHeader } from './renderHeader.js';
-import { renderMovieItem } from './renderMovieItem.js';
+import { renderHeader } from '../components/renderHeader.js';
+import { renderMovieItem } from '../components/renderMovieItem.js';
+import { renderMovieModal } from '../components/renderMovieModal.js';
 import { getMovies, getMovieDetail } from '../apis/movie.js';
 import {
   TMDB_MOVIE_LISTS,
@@ -17,7 +18,6 @@ import {
   TMDB_THUMBNAIL_URL,
   TMDB_BANNER_URL,
 } from '../constant.js';
-import { renderMovieModal } from './renderMovieModal.js';
 
 function createMoviePage(movies, activeTab) {
   const templatePath = path.join(__dirname, '../../views', 'index.html');
@@ -95,8 +95,8 @@ router.get('/detail/:movieId', async (req, res) => {
   const modalHTML = renderMovieModal(
     movieDetail.title,
     TMDB_THUMBNAIL_URL + movieDetail.poster_path,
-    movieDetail.release_date.split('-')[0],
-    movieDetail.genres.map((genre) => genre.name),
+    movieDetail.release_date,
+    movieDetail.genres,
     movieDetail.vote_average,
     movieDetail.overview
   );

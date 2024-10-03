@@ -11,7 +11,9 @@ export function renderMovieModal(title, thumbnailFullUrl, releaseYear, genres, r
             </div>
             <div class="modal-description">
               <h2>${title}</h2>
-              <p class="category">${releaseYear} · ${genres.join(', ')}</p>
+              <p class="category">
+                ${releaseYear.split('-')[0]} · ${genres.map((genre) => genre.name).join(', ')}
+              </p>
               <p class="rate">
                 <img src="/assets/images/star_filled.png" class="star" />
                 <span>${rate.toFixed(1)}</span>
