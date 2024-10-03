@@ -10,12 +10,12 @@ export const TMDB_RESOURCE = {
 
 export const TMDB_API_URL = {
   MOVIE_LISTS: {
-    NOW_PLAYING: BASE_URL + "/now_playing?language=ko-KR&page=1",
-    POPULAR: BASE_URL + "/popular?language=ko-KR&page=1",
-    TOP_RATED: BASE_URL + "/top_rated?language=ko-KR&page=1",
-    UPCOMING: BASE_URL + "/upcoming?language=ko-KR&page=1",
+    NOW_PLAYING: `${BASE_URL}/now_playing?language=ko-KR&page=1`,
+    POPULAR: `${BASE_URL}/popular?language=ko-KR&page=1`,
+    TOP_RATED: `${BASE_URL}/top_rated?language=ko-KR&page=1`,
+    UPCOMING: `${BASE_URL}/upcoming?language=ko-KR&page=1`,
   },
-  MOVIE_DETAIL_URL: BASE_URL,
+  MOVIE_DETAIL_URL: (movieId) => `${BASE_URL}/${movieId}?language=ko-KR`,
 };
 
 export const ROUTE = {
@@ -26,7 +26,8 @@ export const ROUTE = {
     TOP_RATED: "/top-rated",
     UPCOMING: "/upcoming",
   },
-  MOVIE_DETAIL: (movieId, listType) =>
+  MOVIE_DETAIL: "/detail/:movieId",
+  MOVIE_DETAIL_PATH: (movieId, listType) =>
     `/detail/${movieId}?listType=${listType}`,
 };
 

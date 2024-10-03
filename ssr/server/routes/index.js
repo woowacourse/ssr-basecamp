@@ -7,8 +7,9 @@ import {
   generateMovieList,
   generateTopRatedContainer,
   generateMovieListTabHTML,
+  generateMovieDetailModal,
 } from "../utils/generateHTML.js";
-import { fetchMovies } from "../apis/movie.js";
+import { fetchMovies, fetchMovieDetail } from "../apis/movie.js";
 import { MOVIE_LIST_TYPE, ROUTE } from "../constant.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -66,6 +67,19 @@ router.get(ROUTE.MOVIE_LISTS.UPCOMING, async (_, response) => {
   response.send(
     renderMovieListHTML(fetchedMovies.results, MOVIE_LIST_TYPE.UPCOMING.TYPE)
   );
+});
+
+router.get(ROUTE.MOVIE_DETAIL, async (request, response) => {
+  const fetchedMovieDetail = await fetchMovieDetail(request.params.movieId);
+  const fetchedMovies = await fetchMovies(request.query.listType);
+
+  const movieListHTML = renderMovieListHTML(
+    fetchedMovies.results,
+    request.query.listType
+  );
+  const modalHTML = generateMovieDetailModal(fetchedMovieDetail);
+
+  response.send(movieListHTML.replace("<!--${MODAL_AREA}-->", modalHTML));
 });
 
 export default router;

@@ -7,3 +7,10 @@ export const fetchMovies = async (listType) => {
 
   return await response.json();
 };
+
+export const fetchMovieDetail = async (movieId) => {
+  const fetchURL = TMDB_API_URL.MOVIE_DETAIL_URL(movieId);
+  const response = await fetch(fetchURL, FETCH_OPTIONS);
+
+  return await response.json();
+};
