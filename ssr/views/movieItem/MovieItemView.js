@@ -1,4 +1,5 @@
 import { TMDB_THUMBNAIL_URL } from "../../server/Constant.js";
+import round from "../../utils/round.js";
 
 const MovieItemView = (movie) => {
   return `<li>
@@ -7,7 +8,7 @@ const MovieItemView = (movie) => {
       <div class="item-desc">
         <p class="rate">
           <img src="/assets/images/star_empty.png"" class="star" />
-          <span>${movie.vote_average.toFixed(1)}</span>
+          <span>${round(movie.vote_average, 1)}</span>
         </p>
         <strong>${movie.title}</strong>
       </div>

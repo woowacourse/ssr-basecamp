@@ -1,4 +1,5 @@
 import { TMDB_BANNER_URL } from "../../server/Constant.js";
+import round from "../../utils/round.js";
 
 const TopRatedMovieView = (movie) => {
   const bannerUrl = TMDB_BANNER_URL + movie.backdrop_path;
@@ -13,7 +14,7 @@ const TopRatedMovieView = (movie) => {
         <div class="top-rated-movie">
           <div class="rate">
             <img src="../assets/images/star_empty.png" class="star" />
-            <span class="rate-value">${movie.vote_average.toFixed(1)}</span>
+            <span class="rate-value">${round(movie.vote_average, 1)}</span>
           </div>
           <div class="title">${movie.title}</div>
         <button class="primary detail">자세히 보기</button>
