@@ -19,9 +19,7 @@ export const renderDetailModal = async (req, res) => {
   
   const moviesHTML = getMoviesHTML(movies)
   const bestMovieHTML = getBestMovieHTML(movies[0])
-
-  const currentPath = req.path;
-  const tabHTML = getTabHTML(currentPath)
+  const tabHTML = getTabHTML("/now-playing")
   const modalHTML = getDetailModalHTML(movieDetail);
   
   const renderedHTML = template
