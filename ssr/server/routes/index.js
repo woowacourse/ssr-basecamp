@@ -8,7 +8,7 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   const movies = await fetchMovies(TMDB_MOVIE_LISTS.NOW_PLAYING);
-  const moviesHTML = renderMoviePage(movies, req.path);
+  const moviesHTML = renderMoviePage(movies, '/now-playing');
 
   res.send(moviesHTML);
 });
