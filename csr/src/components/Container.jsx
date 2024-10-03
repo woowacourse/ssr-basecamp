@@ -47,18 +47,28 @@ function Container() {
 
   return (
     <div className="container">
-      <Tab items={Object.values(categories)} onClick={handleTabClick} selectedIndex={focusedIndex} />
+      <Tab
+        items={Object.values(categories)}
+        onClick={handleTabClick}
+        selectedIndex={focusedIndex}
+      />
       <main>
         <section>
           <h2>지금 인기 있는 영화</h2>
           <ul className="thumbnail-list">
-            {lists[focusedIndex].map(({ id, title, vote_average, poster_path }) => (
-              <li key={id}>
-                <Link to={`/detail/${id}`}>
-                  <MovieItem rate={vote_average} title={title} thumbnailUrl={poster_path} />
-                </Link>
-              </li>
-            ))}
+            {lists[focusedIndex].map(
+              ({ id, title, vote_average, poster_path }) => (
+                <li key={id}>
+                  <Link to={`/detail/${id}`}>
+                    <MovieItem
+                      rate={vote_average}
+                      title={title}
+                      thumbnailUrl={poster_path}
+                    />
+                  </Link>
+                </li>
+              )
+            )}
           </ul>
         </section>
       </main>
