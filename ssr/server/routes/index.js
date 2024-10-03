@@ -10,6 +10,7 @@ import {
 } from "../src/api/movie.js";
 import { round } from "../../../csr/src/utils.js";
 import { renderMovieItems } from "../src/render/renderMovieItems.js";
+import { renderHeader } from "../src/render/renderHeader.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,7 +29,7 @@ const fetchMovieItems = async (path) => {
     case "/upcoming":
       return await fetchUpcomingMovieItems();
     default:
-      throw new Error("Invalid path");
+      throw new Error("Invalid path: 잘못된 경로 입니다.");
   }
 };
 
@@ -38,9 +39,10 @@ const renderMoviePage = async (req, res) => {
     const currentPath = req.path === "/" ? "/now-playing" : req.path;
 
     const movies = await fetchMovieItems(currentPath);
-    const featuredMovie = movies[0]; // 첫 번째 영화를 대표 영화로 사용
+    const featuredMovie = movies[0];
 
     const moviesHTML = renderMovieItems(movies);
+    const headerHTML = renderHeader(featuredMovie);
 
     let template = fs.readFileSync(templatePath, "utf-8");
 
@@ -51,10 +53,9 @@ const renderMoviePage = async (req, res) => {
       "/upcoming": "개봉 예정 영화",
     };
 
-    // 탭 선택 상태 업데이트
     template = template.replace(
       /<div class="tab-item ([^"]+)">/g,
-      (match, tabName) => {
+      (_, tabName) => {
         const isSelected =
           currentPath === `/${tabName}` ||
           (currentPath === "/now-playing" && tabName === "now-playing");
@@ -64,17 +65,8 @@ const renderMoviePage = async (req, res) => {
       }
     );
 
-    // 변수 치환
     const renderedHTML = template
-      .replace(/\$\{bestMovie\.title\}/g, featuredMovie.title)
-      .replace(
-        /\$\{bestMovie\.vote_average\}/g,
-        round(featuredMovie.vote_average, 1)
-      )
-      .replace(
-        /\$\{bestMovie\.backdrop_path\}/g,
-        `https://media.themoviedb.org/t/p/original${featuredMovie.backdrop_path}`
-      )
+      .replace("<!--${HEADER_PLACEHOLDER}-->", headerHTML)
       .replace(/\$\{sectionTitle\}/g, sectionTitles[currentPath])
       .replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML);
 

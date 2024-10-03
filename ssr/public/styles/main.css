@@ -43,6 +43,13 @@ button.primary {
   border-radius: 4px;
 }
 
+a.primary {
+  color: var(--color-white);
+  font-weight: bold;
+  background-color: var(--color-lightblue-90);
+  border-radius: 4px;
+}
+
 #wrap {
   min-width: 1440px;
   background-color: var(--color-bluegray-100);
