@@ -2,9 +2,11 @@ import { Router } from "express";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { FETCH_OPTIONS, TMDB_MOVIE_LISTS } from "../Constant.js";
+import { FETCH_OPTIONS, TMDB_MOVIE_DETAIL_URL, TMDB_MOVIE_LISTS, TMDB_ORIGINAL_URL } from "../Constant.js";
 import MovieItemView from "../../views/movieItem/MovieItemView.js";
 import TopRatedMovieView from "../../views/topRatedMovie/TopRatedMovieView.js";
+import ModalView from "../../views/modal/ModalView.js";
+import round from "../../utils/round.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,6 +18,16 @@ const loadMovies = async (url) => {
   const data = await response.json();
 
   return data.results;
+};
+
+const loadMovieDetail = async (id) => {
+  const url = TMDB_MOVIE_DETAIL_URL + id;
+  const params = new URLSearchParams({
+    language: "ko-KR",
+  });
+  const response = await fetch(url + "?" + params, FETCH_OPTIONS);
+
+  return await response.json();
 };
 
 const getTopRateMovie = (movies) => {
@@ -64,6 +76,15 @@ const makeHTMLTemplates = async ({ url, selectedTemplate }) => {
   return selectedTemplate !== null ? renderedHTML.replace(selectedTemplate, "selected") : renderedHTML;
 };
 
+const makeDetailTemplate = (movieDetail) => {
+  const templatePath = path.join(__dirname, "../../views", "index.html");
+  const template = fs.readFileSync(templatePath, "utf-8");
+
+  const modalHTML = ModalView(movieDetail);
+  const renderedHTML = template.replace("<!--${MODAL_AREA}-->", modalHTML);
+  return renderedHTML;
+};
+
 router.get("/", async (_, res) => {
   const renderedHTML = await makeHTMLTemplates({ ...tab.root });
   res.send(renderedHTML);
@@ -87,6 +108,26 @@ router.get("/top-rated", async (_, res) => {
 router.get("/upcoming", async (_, res) => {
   const renderedHTML = await makeHTMLTemplates({ ...tab.upcoming });
   res.send(renderedHTML);
+});
+
+router.get("/detail/:movieId", async (req, res) => {
+  const movieId = req.params.movieId;
+  const movieInfo = await loadMovieDetail(movieId);
+
+  const movieDetail = {
+    title: movieInfo.title,
+    bannerUrl: TMDB_ORIGINAL_URL + movieInfo.poster_path,
+    releaseYear: movieInfo.release_date.split("-")[0],
+    description: movieInfo.overview,
+    genres: movieInfo.genres.map(({ name }) => name),
+    rate: round(movieInfo.vote_average, 1),
+  };
+
+  const renderedModalBackgroundHTML = await makeHTMLTemplates({ ...tab.nowPlaying });
+  const modalHTML = ModalView(movieDetail);
+  const wholeRenderedHTML = renderedModalBackgroundHTML.replace("<!--${MODAL_AREA}-->", modalHTML);
+
+  res.send(wholeRenderedHTML);
 });
 
 export default router;
