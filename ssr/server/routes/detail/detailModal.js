@@ -11,6 +11,7 @@ const __dirname = path.dirname(__filename);
 
 export const renderDetailModal = async (req, res) => {
   const movieId = req.params.movieId;
+  //TODO: (@Todari) 이전의 path를 이용해서 배경이 렌더되도록 변경 필요 (req.query.from)
   const movies = await getMovies("now_playing");
   const movieDetail = await getMovieDetail(movieId);
   
