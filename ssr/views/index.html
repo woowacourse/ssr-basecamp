@@ -77,4 +77,63 @@
     </div>
     <!--${MODAL_AREA}-->
   </body>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const tabContainer = document.querySelector('.tab');
+
+      function updateSelectedTab() {
+        const currentPath = window.location.pathname;
+        tabContainer.querySelectorAll('.tab-item').forEach((item) => {
+          const link = item.closest('a');
+
+          if (link && link.getAttribute('href') === currentPath) {
+            item.classList.add('selected');
+          } else {
+            item.classList.remove('selected');
+          }
+        });
+      }
+
+      updateSelectedTab();
+
+      tabContainer.addEventListener('click', (event) => {
+        const tabItem = event.target.closest('.tab-item');
+        if (tabItem) {
+          event.preventDefault();
+
+          const link = tabItem.closest('a');
+          if (link) {
+            const href = link.getAttribute('href');
+            window.location.href = href;
+          }
+        }
+      });
+
+      const movieItems = document.querySelectorAll('.item');
+
+      movieItems.forEach((item) => {
+        item.addEventListener('click', function () {
+          const movieId = this.dataset.movieId;
+          const movieType = this.dataset.movieType;
+
+          const baseUrl = window.location.origin;
+
+          const detailUrl = `${baseUrl}/detail/${movieId}?movieType=${movieType}`;
+
+          window.location.href = detailUrl;
+        });
+      });
+
+      const modalCloseButton = document.querySelector('.close-modal');
+
+      modalCloseButton?.addEventListener('click', () => {
+        const modal = document.querySelector('#modalBackground');
+
+        modal.remove();
+
+        window.location.href = '/now-playing';
+      });
+    });
+  </script>
 </html>

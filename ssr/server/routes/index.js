@@ -8,6 +8,8 @@ const __dirname = path.dirname(__filename);
 
 const router = Router();
 
+let currentMovieType = '';
+
 export const BASE_URL = 'https://api.themoviedb.org/3/movie';
 
 export const TMDB_THUMBNAIL_URL = 'https://media.themoviedb.org/t/p/w440_and_h660_face/';
@@ -21,7 +23,7 @@ export const TMDB_MOVIE_LISTS = {
 };
 
 const fetchMovieList = async (type) => {
-  const response = await fetch(TMDB_MOVIE_LISTS[type ?? 'nowPlaying'], {
+  const response = await fetch(TMDB_MOVIE_LISTS[type || 'nowPlaying'], {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -33,7 +35,7 @@ const fetchMovieList = async (type) => {
 };
 
 const generateMovieHTML = (movie) => `
-  <div class="item">
+  <div class="item" data-movie-type="${currentMovieType}" data-movie-id="${movie.id}">
     <img class="thumbnail" src="${TMDB_THUMBNAIL_URL}${movie.poster_path}" alt="${movie.title}">
     <div class="item-desc">
       <p class="rate">
@@ -55,6 +57,32 @@ const generateMoviesSection = (movieList) => `
   </section>
 `;
 
+const generateModal = (movie) => `
+  <div class="modal-background active" id="modalBackground">
+    <div class="modal">
+      <button class="close-modal" id="closeModal">
+        <img src="/assets/images/modal_button_close.png">
+      </button>
+      <div class="modal-container">
+        <div class="modal-image">
+          <img src="${TMDB_THUMBNAIL_URL}${movie.poster_path}" alt="${movie.title}">
+        </div>
+        <div class="modal-description">
+          <h2>${movie.title}</h2>
+          <p class="category">${movie.genres.map(({ name }) => name).join(', ')}</p>
+          <p class="rate">
+            <img src="/assets/images/star_empty.png" class="star">
+            <span>8.7</span>
+          </p>
+          <hr>
+          <p class="detail">
+            ${movie.overview}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+`;
 const renderHTML = (movies) => {
   const templatePath = path.join(__dirname, '../../views', 'index.html');
 
@@ -70,30 +98,35 @@ const renderHTML = (movies) => {
 };
 
 router.get('/', async (_, res) => {
+  currentMovieType = 'nowPlaying';
   const movies = await fetchMovieList();
 
   res.send(renderHTML(movies));
 });
 
 router.get('/now-playing', async (_, res) => {
+  currentMovieType = 'nowPlaying';
   const movies = await fetchMovieList('nowPlaying');
 
   res.send(renderHTML(movies));
 });
 
 router.get('/popular', async (_, res) => {
+  currentMovieType = 'popular';
   const movies = await fetchMovieList('popular');
 
   res.send(renderHTML(movies));
 });
 
 router.get('/top-rated', async (_, res) => {
+  currentMovieType = 'topRated';
   const movies = await fetchMovieList('topRated');
 
   res.send(renderHTML(movies));
 });
 
 router.get('/upcoming', async (_, res) => {
+  currentMovieType = 'upcoming';
   const movies = await fetchMovieList('upcoming');
 
   res.send(renderHTML(movies));
@@ -112,19 +145,13 @@ const fetchMovieItem = async (id) => {
 };
 
 router.get('/detail/:id', async (req, res) => {
-  const movieId = 238;
+  const movieItem = await fetchMovieItem(req.params.id);
 
-  const movieDetails = await fetchMovieItem(movieId);
+  const movies = await fetchMovieList(req.query.movieType);
 
-  console.log(movieDetails);
+  const html = renderHTML(movies).replace('<!--${MODAL_AREA}-->', generateModal(movieItem));
 
-  // const templatePath = path.join(__dirname, '../../views', 'index.html');
-  // let template = fs.readFileSync(templatePath, 'utf-8');
-
-  // const movies = await fetchMovieList();
-  // const moviesHTML = generateMoviesSection(movies.results);
-
-  // res.send(renderedHTML);
+  res.send(html);
 });
 
 export default router;
