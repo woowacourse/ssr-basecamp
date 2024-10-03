@@ -1,21 +1,52 @@
-import { Router } from "express";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { Router } from 'express';
+import { fetchMovieDetail, fetchMovies } from './src/apis/apis.js';
+import { renderMoviePage } from './src/renderMoviePage.js';
+import { TMDB_MOVIE_LISTS } from './src/constants/constant.js';
+import { renderMovieModal } from './src/renderMovieModal.js';
 
 const router = Router();
 
-router.get("/", (_, res) => {
-  const templatePath = path.join(__dirname, "../../views", "index.html");
-  const moviesHTML = "<p>들어갈 본문 작성</p>";
+router.get('/', async (req, res) => {
+  const movies = await fetchMovies(TMDB_MOVIE_LISTS.NOW_PLAYING);
+  const moviesHTML = renderMoviePage(movies, '/now-playing');
 
-  const template = fs.readFileSync(templatePath, "utf-8");
-  const renderedHTML = template.replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML);
+  res.send(moviesHTML);
+});
 
-  res.send(renderedHTML);
+router.get('/now-playing', async (req, res) => {
+  const movies = await fetchMovies(TMDB_MOVIE_LISTS.NOW_PLAYING);
+  const moviesHTML = renderMoviePage(movies, req.path);
+
+  res.send(moviesHTML);
+});
+
+router.get('/popular', async (req, res) => {
+  const movies = await fetchMovies(TMDB_MOVIE_LISTS.POPULAR);
+  const moviesHTML = renderMoviePage(movies, req.path);
+
+  res.send(moviesHTML);
+});
+
+router.get('/top-rated', async (req, res) => {
+  const movies = await fetchMovies(TMDB_MOVIE_LISTS.TOP_RATED);
+  const moviesHTML = renderMoviePage(movies, req.path);
+
+  res.send(moviesHTML);
+});
+
+router.get('/upcoming', async (req, res) => {
+  const movies = await fetchMovies(TMDB_MOVIE_LISTS.UPCOMING);
+  const moviesHTML = renderMoviePage(movies, req.path);
+
+  res.send(moviesHTML);
+});
+
+router.get('/detail/:movieId', async (req, res) => {
+  const movies = await fetchMovies(TMDB_MOVIE_LISTS.NOW_PLAYING);
+  const movieDetail = await fetchMovieDetail(req.params.movieId);
+  const moviesHTML = renderMovieModal(movies, movieDetail);
+
+  res.send(moviesHTML);
 });
 
 export default router;
