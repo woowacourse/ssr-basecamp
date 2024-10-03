@@ -3,11 +3,12 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import fetchMovies from '../movies.js';
+import fetchMovies from '../api/movies.js';
 import {
   getBannerHTML,
   getModalHTML,
   getMoviesHTML,
+  getTabsHTML,
 } from '../templates/movie.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -19,6 +20,7 @@ const placeholders = {
   banner: '<!-- ${BANNER_PLACEHOLDER} -->',
   movies: '<!-- ${MOVIE_ITEMS_PLACEHOLDER} -->',
   modal: '<!-- ${MODAL_AREA} -->',
+  tabs: '<!-- ${TABS_PLACEHOLDER} -->',
 };
 
 const renderMoviePage = async ({
@@ -32,6 +34,7 @@ const renderMoviePage = async ({
   const movieDetail = movieId ? await fetchMovies.detail(movieId) : null;
 
   const bannerHTML = await getBannerHTML(movies.results[0]);
+  const tabsHTML = getTabsHTML(category);
   const moviesHTML = await getMoviesHTML(movies);
   const modalHTML = movieDetail ? await getModalHTML(movieDetail) : '';
 
@@ -39,6 +42,7 @@ const renderMoviePage = async ({
 
   const renderedHTML = template
     .replace(placeholders.banner, bannerHTML)
+    .replace(placeholders.tabs, tabsHTML)
     .replace(placeholders.movies, moviesHTML)
     .replace(placeholders.modal, modalHTML);
 

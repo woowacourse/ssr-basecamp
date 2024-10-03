@@ -2,7 +2,7 @@ import {
   TMDB_BANNER_URL,
   TMDB_ORIGINAL_URL,
   TMDB_THUMBNAIL_URL,
-} from '../constants.js';
+} from '../api/constants.js';
 
 export const getBannerHTML = async (movie) => {
   const { vote_average: rate, title, backdrop_path: backdropPath } = movie;
@@ -29,19 +29,43 @@ export const getBannerHTML = async (movie) => {
       </div>
     </div>
     </header>
+
+    <script src="../assets/scripts/tab.js"></script>
     `;
 };
 
+export const getTabsHTML = (category) => {
+  const tabs = {
+    nowPlaying: { href: '/now-playing', label: '상영 중' },
+    popular: { href: '/popular', label: '인기' },
+    upcoming: { href: '/upcoming', label: '개봉 예정' },
+    topRated: { href: '/top-rated', label: '평점 높은 순' },
+  };
+
+  return Object.entries(tabs)
+    .map(([menu, { href, label }]) => {
+      return /*html*/ `
+      <li>
+        <a href="${href}">
+          <div class="tab-item ${menu === category && 'selected'}">
+            <h3>${label}</h3>
+          </div>
+        </a>
+      </li>
+    `;
+    })
+    .join('\n');
+};
+
 export const getMoviesHTML = async (movies) => {
-  return /*html*/ `
-    ${movies.results
-      .map(
-        ({
-          id,
-          title,
-          vote_average: rate,
-          poster_path: thumbnailPath,
-        }) => /*html*/ `
+  return movies.results
+    .map(
+      ({
+        id,
+        title,
+        vote_average: rate,
+        poster_path: thumbnailPath,
+      }) => /*html*/ `
         <li>
           <a href="/detail/${id}">
             <div class="item">
@@ -59,9 +83,8 @@ export const getMoviesHTML = async (movies) => {
           </a>
         </li>  
       `
-      )
-      .join('\n')}
-  `;
+    )
+    .join('\n');
 };
 
 export const getModalHTML = async (movieDetail) => {
