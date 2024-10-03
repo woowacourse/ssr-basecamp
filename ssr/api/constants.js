@@ -12,6 +12,7 @@ export const TMDB_MOVIE_LISTS = {
   UPCOMING: BASE_URL + '/upcoming?language=ko-KR&page=1',
 };
 export const TMDB_MOVIE_DETAIL_URL = 'https://api.themoviedb.org/3/movie/';
+export const MOVIE_DETAIL = (id) => `${id}?language=ko-kr`;
 
 export const FETCH_OPTIONS = {
   method: 'GET',
