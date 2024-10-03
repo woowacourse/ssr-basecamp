@@ -54,8 +54,16 @@ router.get('/', async (_, res) => {
         'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/' +
           bestMovieItem.background
       );
-      template = template.replace('${bestMovie.rate}', bestMovieItem.vote_average);
+      template = template.replace(
+        '${bestMovie.rate}',
+        bestMovieItem.vote_average
+      );
       template = template.replace('${bestMovie.title}', bestMovieItem.title);
+
+      template = template.replace(
+        'class="tab-item top-rated"',
+        'class="tab-item selected top-rated"'
+      );
       return template;
     };
 

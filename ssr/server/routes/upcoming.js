@@ -59,6 +59,11 @@ router.get('/', async (_, res) => {
         bestMovieItem.vote_average
       );
       template = template.replace('${bestMovie.title}', bestMovieItem.title);
+
+      template = template.replace(
+        'class="tab-item upcoming"',
+        'class="tab-item selected upcoming"'
+      );
       return template;
     };
 
