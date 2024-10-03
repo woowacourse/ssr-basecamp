@@ -1,6 +1,6 @@
-export function renderMovieItem(title, thumbnailFullUrl, rate) {
+export function renderMovieItem(movieId, title, thumbnailFullUrl, rate) {
   return `
-      <div class="item">
+      <div class="item" onClick="window.location.href='/detail/${movieId}'">
         <img class="thumbnail" src="${thumbnailFullUrl}" alt="${title}" />
         <div class="item-desc">
           <p class="rate">

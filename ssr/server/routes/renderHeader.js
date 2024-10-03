@@ -10,7 +10,7 @@ export function renderHeader(backgroundUrl, title, rate) {
             <div class="top-rated-movie">
               <div class="rate">
                 <img src="/assets/images/star_empty.png" class="star" />
-                <span class="rate-value">${rate}</span>
+                <span class="rate-value">${rate.toFixed(1)}</span>
               </div>
               <div class="title">${title}</div>
               <button class="primary detail">자세히 보기</button>
