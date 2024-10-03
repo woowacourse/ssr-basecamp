@@ -29,6 +29,25 @@ export const ROUTE = {
   MOVIE_DETAIL: (movieId) => `/detail/${movieId}`,
 };
 
+export const MOVIE_LIST_TYPE = {
+  NOW_PLAYING: {
+    TYPE: "NOW_PLAYING",
+    TAB_NAME: "상영 중",
+  },
+  POPULAR: {
+    TYPE: "POPULAR",
+    TAB_NAME: "인기순",
+  },
+  TOP_RATED: {
+    TYPE: "TOP_RATED",
+    TAB_NAME: "평점순",
+  },
+  UPCOMING: {
+    TYPE: "UPCOMING",
+    TAB_NAME: "상영 예정",
+  },
+};
+
 export const FETCH_OPTIONS = {
   method: "GET",
   headers: {

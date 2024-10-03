@@ -1,4 +1,4 @@
-import { TMDB_RESOURCE, ROUTE } from "../constant.js";
+import { TMDB_RESOURCE, ROUTE, MOVIE_LIST_TYPE } from "../constant.js";
 
 export const generateMovieList = (moviesData) => {
   const movieListHTML = moviesData.map((movie) => generateMovieItem(movie));
@@ -52,5 +52,25 @@ export const generateTopRatedContainer = (movie) => {
         </div>
       </div>
     </div>
+  `;
+};
+
+export const generateMovieListTabHTML = (listType) => {
+  const movieListTabHTML = Object.values(MOVIE_LIST_TYPE).map((ITEM) => {
+    return /*html*/ `
+      <li>
+        <a href=${ROUTE.MOVIE_LISTS[ITEM.TYPE]}>
+          <div class="tab-item ${listType === ITEM.TYPE && "selected"}">
+            <h3>${ITEM.TAB_NAME}</h3>
+          </div>
+        </a>
+      </li>
+    `;
+  });
+
+  return /*html*/ `
+    <ul class="tab">
+      ${movieListTabHTML.join("")}
+    </ul>
   `;
 };
