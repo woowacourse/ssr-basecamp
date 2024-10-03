@@ -25,7 +25,9 @@ export const renderMovieItem = (movieItems = []) =>
               alt="${title}"
             />
             <div class="item-desc">
-              <p class="rate"><img src='${STAR_IMAGE}' alt='' class="star" /><span>${vote_average}</span></p>
+              <p class="rate"><img src='${STAR_IMAGE}' alt='' class="star" /><span>${
+      Math.round(vote_average * 10) / 10
+    }</span></p>
               <strong>${title}</strong>
             </div>
           </div>
