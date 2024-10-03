@@ -2,9 +2,10 @@ import { Router } from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { fetchMovies } from '../../src/api/movie.js'; // Import the fetchMovies function
-import { renderMovieItemPage } from '../../src/templates/renderMovieItemPage.js'; // Import the renderMovieItemPage template function
+import { fetchMovieDetail, fetchMovies } from '../../src/api/movie.js';
+import { renderMovieItemPage } from '../../src/templates/renderMovieItemPage.js';
 import { TMDB_MOVIE_LISTS } from '../../src/constants/constant.js';
+import { renderModal } from '../../src/templates/renderModal.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,7 +30,7 @@ router.get('/', async (_, res) => {
 
 router.get('/now-playing', async (_, res) => {
   try {
-    const movies = await fetchMovies(TMDB_MOVIE_LISTS.NOW_PLAYING); // Fetch movie data from API
+    const movies = await fetchMovies(TMDB_MOVIE_LISTS.NOW_PLAYING);
 
     const templatePath = path.join(__dirname, '../../views', 'index.html');
     const template = fs.readFileSync(templatePath, 'utf-8');
@@ -45,7 +46,7 @@ router.get('/now-playing', async (_, res) => {
 
 router.get('/popular', async (_, res) => {
   try {
-    const movies = await fetchMovies(TMDB_MOVIE_LISTS.POPULAR); // Fetch movie data from API
+    const movies = await fetchMovies(TMDB_MOVIE_LISTS.POPULAR);
 
     const templatePath = path.join(__dirname, '../../views', 'index.html');
     const template = fs.readFileSync(templatePath, 'utf-8');
@@ -61,7 +62,7 @@ router.get('/popular', async (_, res) => {
 
 router.get('/top-rated', async (_, res) => {
   try {
-    const movies = await fetchMovies(TMDB_MOVIE_LISTS.TOP_RATED); // Fetch movie data from API
+    const movies = await fetchMovies(TMDB_MOVIE_LISTS.TOP_RATED);
 
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
@@ -80,7 +81,7 @@ router.get('/top-rated', async (_, res) => {
 
 router.get('/upcoming', async (_, res) => {
   try {
-    const movies = await fetchMovies(TMDB_MOVIE_LISTS.UPCOMING); // Fetch movie data from API
+    const movies = await fetchMovies(TMDB_MOVIE_LISTS.UPCOMING);
 
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
@@ -94,6 +95,20 @@ router.get('/upcoming', async (_, res) => {
   } catch (error) {
     console.error('Error fetching movies:', error);
     res.status(500).send('Error rendering the page');
+  }
+});
+
+router.get('/detail/:id', async (req, res) => {
+  try {
+    const movieId = req.params.id;
+    const moviesData = await fetchMovies(TMDB_MOVIE_LISTS.NOW_PLAYING);
+    const movieDetail = await fetchMovieDetail(movieId);
+    const modalHTML = renderModal(movieDetail, moviesData);
+
+    res.send(modalHTML);
+  } catch (error) {
+    console.error('Error fetching movie details:', error);
+    res.status(500).send('Error fetching movie details');
   }
 });
 
