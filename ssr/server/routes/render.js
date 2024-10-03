@@ -78,14 +78,14 @@ export const renderMovieItemModal = (moviesData, movieDetailItem) => {
     /*html*/ `
       <div class="modal-background active" id="modalBackground">
         <div class="modal">
-        <button class="close-modal" id="closeModal"><img src="../images/modal_button_close.png" /></button>
+        <button class="close-modal" id="closeModal"><img src="../assets/images/modal_button_close.png" /></button>
         <div class="modal-container">
           <div class="modal-image">
             <img src="https://image.tmdb.org/t/p/original/${movieDetailItem.backdrop_path}.jpg" />
           </div>
           <div class="modal-description">
             <h2>${movieDetailItem.title}</h2>
-            <p class="category">${movieDetailItem.releaseDate.substring(0, 4)} · ${movieDetailItem.genres.join(", ")}</p>
+            <p class="category">${movieDetailItem.release_date.substring(0, 4)} · ${movieDetailItem.genres.join(", ")}</p>
             <p class="rate"><img src="../assets/images/star_filled.png" class="star" /><span>${movieDetailItem.vote_average}</span></p>
             <hr />
             <p class="detail">
