@@ -1,21 +1,15 @@
-import { Router } from "express";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import {Router} from 'express';
+import {renderMoviePage} from './moviePage.js';
+import {renderDetailModal} from './detail/detailModal.js';
 
 const router = Router();
 
-router.get("/", (_, res) => {
-  const templatePath = path.join(__dirname, "../../views", "index.html");
-  const moviesHTML = "<p>들어갈 본문 작성</p>";
+router.get('/', (req, res) => renderMoviePage(req, res, 'now_playing'));
+router.get('/now-playing', (req, res) => renderMoviePage(req, res, 'now_playing'));
+router.get('/top-rated', (req, res) => renderMoviePage(req, res, 'top_rated'));
+router.get('/popular', (req, res) => renderMoviePage(req, res, 'popular'));
+router.get('/upcoming', (req, res) => renderMoviePage(req, res, 'upcoming'));
 
-  const template = fs.readFileSync(templatePath, "utf-8");
-  const renderedHTML = template.replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML);
-
-  res.send(renderedHTML);
-});
+router.get('/detail/:movieId', async (req, res) => renderDetailModal(req, res));
 
 export default router;
