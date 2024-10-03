@@ -3,14 +3,15 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import {
+  fetchMovieDetails,
   fetchNowPlayingMovieItems,
   fetchPopularMovieItems,
   fetchTopRatedMovieItems,
   fetchUpcomingMovieItems,
 } from "../src/api/movie.js";
-import { round } from "../../../csr/src/utils.js";
 import { renderMovieItems } from "../src/render/renderMovieItems.js";
 import { renderHeader } from "../src/render/renderHeader.js";
+import { renderMovieDetails } from "../src/render/renderMovieDetails.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -77,10 +78,34 @@ const renderMoviePage = async (req, res) => {
   }
 };
 
+const renderMovieDetailPage = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const templatePath = path.join(__dirname, "../../views", "index.html");
+
+    const movieDetail = await fetchMovieDetails(id);
+    const movieDetailHTML = renderMovieDetails(movieDetail);
+
+    let template = fs.readFileSync(templatePath, "utf-8");
+
+    const renderedHTML = template.replace(
+      "<!--${MOVIE_ITEMS_PLACEHOLDER}-->",
+      movieDetailHTML
+    );
+
+    res.send(renderedHTML);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 router.get("/", renderMoviePage);
 router.get("/now-playing", renderMoviePage);
 router.get("/popular", renderMoviePage);
 router.get("/top-rated", renderMoviePage);
 router.get("/upcoming", renderMoviePage);
+router.get("/detail/:id", renderMovieDetailPage);
 
 export default router;

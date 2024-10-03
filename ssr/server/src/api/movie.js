@@ -1,4 +1,8 @@
-import { FETCH_OPTIONS, TMDB_MOVIE_LISTS } from "../constant.js";
+import {
+  FETCH_OPTIONS,
+  TMDB_MOVIE_DETAIL_URL,
+  TMDB_MOVIE_LISTS,
+} from "../constant.js";
 
 export const fetchPopularMovieItems = async () => {
   const response = await fetch(TMDB_MOVIE_LISTS.POPULAR, FETCH_OPTIONS);
@@ -26,6 +30,15 @@ export const fetchTopRatedMovieItems = async () => {
 
 export const fetchUpcomingMovieItems = async () => {
   const response = await fetch(TMDB_MOVIE_LISTS.UPCOMING, FETCH_OPTIONS);
+
+  const data = await response.json();
+
+  return data.results;
+};
+
+export const fetchMovieDetails = async (id) => {
+  const url = `${TMDB_MOVIE_DETAIL_URL}${id}?language=ko-KR`;
+  const response = await fetch(url, FETCH_OPTIONS);
 
   const data = await response.json();
 
