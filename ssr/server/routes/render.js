@@ -5,12 +5,13 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// 탭 섹션 렌더링
 export const renderTabSection = (currentTab) => {
   const tabs = [
-    { name: "now-playing", label: "상영 중", href: "/now-playing" },
-    { name: "popular", label: "인기순", href: "/popular" },
-    { name: "top-rated", label: "평점순", href: "/top-rated" },
-    { name: "upcoming", label: "상영 예정", href: "/upcoming" },
+    { label: "상영 중", href: "/now-playing" },
+    { label: "인기순", href: "/popular" },
+    { label: "평점순", href: "/top-rated" },
+    { label: "상영 예정", href: "/upcoming" },
   ];
 
   return tabs
@@ -18,7 +19,7 @@ export const renderTabSection = (currentTab) => {
       (tab) => `
       <li>
         <a href="${tab.href}">
-          <div class="tab-item ${tab.name === currentTab ? "selected" : ""}">
+          <div class="tab-item ${tab.href === currentTab ? "selected" : ""}">
             <h3>${tab.label}</h3>
           </div>
         </a>
@@ -28,9 +29,11 @@ export const renderTabSection = (currentTab) => {
     .join("");
 };
 
+// 영화 목록 렌더링
 export const renderMovieItems = (movieItems = []) =>
-  movieItems.map(
-    ({ id, title, backdrop_path, vote_average }) => /*html*/ `
+  movieItems
+    .map(
+      ({ id, title, backdrop_path, vote_average }) => /*html*/ `
       <li>
       <a href="/detail/${id}">
         <div class="item">
@@ -47,16 +50,19 @@ export const renderMovieItems = (movieItems = []) =>
       </a>
     </li>
     `
-  );
+    )
+    .join("");
 
-export const renderMovieItemPage = (moviesData) => {
+// 영화 페이지 렌더링
+export const renderMovieItemPage = (moviesData, currentTab) => {
   const bestMovieItem = moviesData[0];
-  const moviesHTML = renderMovieItems(moviesData).join("");
+  const moviesHTML = renderMovieItems(moviesData);
 
   const templatePath = path.join(__dirname, "../../views", "index.html");
   let template = fs.readFileSync(templatePath, "utf-8");
 
-  template = template.replace("${background-container}", "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/" + bestMovieItem.background);
+  template = template.replace("<!--${TAB_ITEMS}-->", renderTabSection(currentTab));
+  template = template.replace("${background-container}", "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/" + bestMovieItem.backdrop_path);
   template = template.replace("${bestMovie.rate}", bestMovieItem.vote_average);
   template = template.replace("${bestMovie.title}", bestMovieItem.title);
   template = template.replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML);
@@ -64,6 +70,7 @@ export const renderMovieItemPage = (moviesData) => {
   return template;
 };
 
+// 모달 렌더링
 export const renderMovieItemModal = (moviesData, movieDetailItem) => {
   const moviesPageTemplate = renderMovieItemPage(moviesData);
   return moviesPageTemplate.replace(
