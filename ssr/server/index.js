@@ -15,6 +15,11 @@ const __dirname = path.dirname(__filename);
 app.use("/assets", express.static(path.join(__dirname, "../public")));
 
 app.use("/", movieRouter);
+app.use("/now-playing", nowPlaying);
+// app.use("/popular", popular);
+// app.use("/top-rated", topRated);
+// app.use("/upcoming", upcoming);
+// app.use("/detail", detailModal);
 // app.use("/members", membersRouter); // 본 미션 참고를 위한 코드이며 사전 미션에서는 사용하지 않습니다.
 
 // Start server

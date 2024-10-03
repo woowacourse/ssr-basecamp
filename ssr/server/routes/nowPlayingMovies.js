@@ -2,7 +2,7 @@ import { Router } from "express";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { fetchPopularMovieItems } from "../src/api/movie.js";
+import { fetchNowPlayingMovieItems } from "../src/api/movie.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,12 +35,13 @@ export const renderMovieItems = (movieItems = []) =>
 router.get("/", async (_, res) => {
   try {
     const templatePath = path.join(__dirname, "../../views", "index.html");
-    const movies = await fetchPopularMovieItems();
+    const movies = await fetchNowPlayingMovieItems();
     const moviesHTML = renderMovieItems(movies);
 
     const template = fs.readFileSync(templatePath, "utf-8");
+    // now-playing
     const renderedHTML = template.replace(
-      "<!--${MOVIE_ITEMS_PLACEHOLDER}-->",
+      'class="movie-list now-playing"',
       moviesHTML
     );
 
