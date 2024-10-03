@@ -11,13 +11,8 @@ const __dirname = path.dirname(__filename);
 
 const router = Router();
 
-const getBannerHTML = async () => {
-  const topRatedMovies = await fetchMovies.topRated();
-  const {
-    vote_average: rate,
-    title,
-    backdrop_path: backdropPath,
-  } = topRatedMovies.results[0];
+const getBannerHTML = async (movie) => {
+  const { vote_average: rate, title, backdrop_path: backdropPath } = movie;
 
   return /*html*/ `
     <header>
@@ -44,8 +39,7 @@ const getBannerHTML = async () => {
     `;
 };
 
-const getMoviesHTML = async (category) => {
-  const movies = await fetchMovies[category]();
+const getMoviesHTML = async (movies) => {
   return /*html*/ `
     ${movies.results
       .map(
@@ -82,17 +76,40 @@ const placeholders = {
   movies: '<!-- ${MOVIE_ITEMS_PLACEHOLDER} -->',
 };
 
-router.get('/', async (_, res) => {
+const renderPage = async (category, res) => {
+  const movies = await fetchMovies[category]();
+
   const templatePath = path.join(__dirname, '../../views', 'index.html');
-  const bannerHTML = await getBannerHTML();
-  const moviesHTML = await getMoviesHTML('popular');
+  const bannerHTML = await getBannerHTML(movies.results[0]);
+  const moviesHTML = await getMoviesHTML(movies);
 
   const template = fs.readFileSync(templatePath, 'utf-8');
+
   const renderedHTML = template
     .replace(placeholders.banner, bannerHTML)
     .replace(placeholders.movies, moviesHTML);
 
   res.send(renderedHTML);
+};
+
+router.get('/', async (_, res) => {
+  await renderPage('nowPlaying', res);
+});
+
+router.get('/now-playing', async (_, res) => {
+  await renderPage('nowPlaying', res);
+});
+
+router.get('/popular', async (_, res) => {
+  await renderPage('popular', res);
+});
+
+router.get('/upcoming', async (_, res) => {
+  await renderPage('upcoming', res);
+});
+
+router.get('/top-rated', async (_, res) => {
+  await renderPage('topRated', res);
 });
 
 export default router;
