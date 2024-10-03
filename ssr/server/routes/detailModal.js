@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { fetchMovieDetail } from '../../api/fetchMovieDetail.js';
+import { fetchNowPlayingMovies } from '../../api/fetchNowPlayingMovies.js';
+import { TMDB_BANNER_URL } from '../../api/constants.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -49,9 +51,32 @@ router.get('/:id', async (req, res) => {
   </div>
   `;
 
+  const MOVIE_LIST_HTML = (movieItems = []) =>
+    movieItems
+      .map(
+        ({ id, title, poster_path, vote_average }) => /*html*/ `
+        <li>
+          <a href="/detail/${id}">
+            <div class="item">
+              <img
+                class="thumbnail"
+                src="https://media.themoviedb.org/t/p/w440_and_h660_face/${poster_path}"
+                alt="${title}"
+              />
+              <div class="item-desc">
+                <p class="rate"><img src="${STAR_EMPTY}" class="star" /><span>${vote_average}</span></p>
+                <strong>${title}</strong>
+              </div>
+            </div>
+          </a>
+        </li>
+      `
+      )
+      .join('');
+
   const renderMovieDetail = async (movieId) => {
     const movieDetailData = await fetchMovieDetail(movieId);
-    console.log(movieDetailData);
+
     const {
       title,
       poster_path,
@@ -79,7 +104,30 @@ router.get('/:id', async (req, res) => {
     });
 
     template = template.replace('<!--${MODAL_AREA}-->', movieDetailHTML);
+    const moviesData = await fetchNowPlayingMovies();
 
+    const movieListHTML = MOVIE_LIST_HTML(moviesData);
+
+    const bestMovieItem = moviesData[0];
+
+    template = template.replace(
+      '<!--${MOVIE_ITEMS_PLACEHOLDER}-->',
+      movieListHTML
+    );
+    template = template.replace(
+      '${background-container}',
+      TMDB_BANNER_URL + bestMovieItem.backdrop_path
+    );
+    template = template.replace(
+      '${bestMovie.rate}',
+      bestMovieItem.vote_average
+    );
+    template = template.replace('${bestMovie.title}', bestMovieItem.title);
+
+    template = template.replace(
+      'class="tab-item now-playing"',
+      'class="tab-item selected now-playing"'
+    );
     return template;
   };
 

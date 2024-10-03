@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { fetchNowPlayingMovies } from '../../api/fetchNowPlayingMovies.js';
+import { TMDB_BANNER_URL } from '../../api/constants.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,8 +52,7 @@ router.get('/', async (_, res) => {
       );
       template = template.replace(
         '${background-container}',
-        'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/' +
-          bestMovieItem.background
+        TMDB_BANNER_URL + bestMovieItem.backdrop_path
       );
       template = template.replace(
         '${bestMovie.rate}',
