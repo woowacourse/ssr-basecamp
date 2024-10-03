@@ -77,4 +77,27 @@
     </div>
     <!--${MODAL_AREA}-->
   </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const tabItems = document.querySelectorAll(".tab-item");
+
+      const currentPath = window.location.pathname;
+
+      tabItems.forEach((tab) => {
+        const targetLink = tab.parentElement.getAttribute("href");
+        if (targetLink === currentPath) {
+          tab.classList.add("selected");
+        }
+
+        tab.addEventListener("click", (event) => {
+          tabItems.forEach((item) => item.classList.remove("selected"));
+          tab.classList.add("selected");
+
+          if (targetLink) {
+            window.location.href = targetLink;
+          }
+        });
+      });
+    });
+  </script>
 </html>
