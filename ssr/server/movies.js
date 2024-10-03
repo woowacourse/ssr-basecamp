@@ -1,4 +1,8 @@
-import { FETCH_OPTIONS, TMDB_MOVIE_LISTS } from './constants.js';
+import {
+  FETCH_OPTIONS,
+  TMDB_MOVIE_DETAIL_URL,
+  TMDB_MOVIE_LISTS,
+} from './constants.js';
 
 const loadMovies = async (url) => {
   try {
@@ -33,6 +37,11 @@ const fetchMovies = {
 
   topRated: async () => {
     const data = await loadMovies(TMDB_MOVIE_LISTS.topRated);
+    return data;
+  },
+
+  detail: async (id) => {
+    const data = await loadMovies(`${TMDB_MOVIE_DETAIL_URL}${id}`);
     return data;
   },
 };
