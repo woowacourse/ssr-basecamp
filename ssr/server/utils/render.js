@@ -1,9 +1,7 @@
-import { fetchMovies } from "../apis/movie.js";
 import { TMDB_RESOURCE, PATH } from "../constant.js";
 
-export const renderMovieList = async () => {
-  const fetchedMovies = await fetchMovies();
-  const movieListHTML = fetchedMovies.results.map((movie) =>
+export const renderMovieList = async (moviesData) => {
+  const movieListHTML = moviesData.results.map((movie) =>
     renderMovieItem(movie)
   );
 

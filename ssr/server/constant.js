@@ -10,8 +10,8 @@ export const TMDB_RESOURCE = {
 
 export const TMDB_API_URL = {
   MOVIE_LISTS: {
-    POPULAR: BASE_URL + "/popular?language=ko-KR&page=1",
     NOW_PLAYING: BASE_URL + "/now_playing?language=ko-KR&page=1",
+    POPULAR: BASE_URL + "/popular?language=ko-KR&page=1",
     TOP_RATED: BASE_URL + "/top_rated?language=ko-KR&page=1",
     UPCOMING: BASE_URL + "/upcoming?language=ko-KR&page=1",
   },
