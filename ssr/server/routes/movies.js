@@ -5,7 +5,7 @@ import { renderMoviesPage } from "../controllers/moviesController.js";
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  renderMoviesPage(req, res, "POPULAR");
+  renderMoviesPage(req, res, "NOW_PLAYING");
 });
 
 router.get("/now-playing", (req, res) =>
