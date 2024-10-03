@@ -25,7 +25,7 @@ export const renderMovieItem = (movie) => {
             alt=${movie.title}
           />
           <div class="item-desc">
-            <p class="rate"><img src="./images/star_empty.png" class="star" alt="별점" /><span>${averageScore}</span></p>
+            <p class="rate"><img src="/assets/images/star_empty.png" class="star" alt="별점" /><span>${averageScore}</span></p>
             <strong>${movie.title}</strong>
           </div>
         </div>
