@@ -1,4 +1,4 @@
-import { TMDB_RESOURCE, PATH } from "../constant.js";
+import { TMDB_RESOURCE, ROUTE } from "../constant.js";
 
 export const generateMovieList = (moviesData) => {
   const movieListHTML = moviesData.map((movie) => generateMovieItem(movie));
@@ -7,7 +7,7 @@ export const generateMovieList = (moviesData) => {
 };
 
 export const generateMovieItem = (movie) => {
-  const movieDetailPath = PATH.MOVIE_DETAIL(movie.id);
+  const movieDetailPath = ROUTE.MOVIE_DETAIL(movie.id);
   const thumbnailURL = TMDB_RESOURCE.IMAGE.THUMBNAIL_URL + movie.poster_path;
   const averageScore = movie.vote_average.toFixed(1);
 
@@ -31,7 +31,7 @@ export const generateMovieItem = (movie) => {
 };
 
 export const generateTopRatedContainer = (movie) => {
-  const movieDetailPath = PATH.MOVIE_DETAIL(movie.id);
+  const movieDetailPath = ROUTE.MOVIE_DETAIL(movie.id);
   const bannerURL = TMDB_RESOURCE.IMAGE.BANNER_URL + movie.backdrop_path;
   const averageScore = movie.vote_average.toFixed(1);
 

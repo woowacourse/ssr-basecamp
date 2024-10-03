@@ -3,11 +3,12 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import { fetchMovies } from "../apis/movie.js";
 import {
   generateMovieList,
   generateTopRatedContainer,
 } from "../utils/generateHTML.js";
+import { fetchMovies } from "../apis/movie.js";
+import { ROUTE } from "../constant.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,9 +29,29 @@ const renderMovieListHTML = (moviesData) => {
   return renderedHTML;
 };
 
-router.get("/", async (_, res) => {
-  const fetchedMovies = await fetchMovies({ type: "NOW_PLAYING" });
-  res.send(renderMovieListHTML(fetchedMovies.results));
+router.get(ROUTE.ROOT, async (_, response) => {
+  const fetchedMovies = await fetchMovies();
+  response.send(renderMovieListHTML(fetchedMovies.results));
+});
+
+router.get(ROUTE.MOVIE_LISTS.NOW_PLAYING, async (_, response) => {
+  const fetchedMovies = await fetchMovies("NOW_PLAYING");
+  response.send(renderMovieListHTML(fetchedMovies.results));
+});
+
+router.get(ROUTE.MOVIE_LISTS.POPULAR, async (_, response) => {
+  const fetchedMovies = await fetchMovies("POPULAR");
+  response.send(renderMovieListHTML(fetchedMovies.results));
+});
+
+router.get(ROUTE.MOVIE_LISTS.TOP_RATED, async (_, response) => {
+  const fetchedMovies = await fetchMovies("TOP_RATED");
+  response.send(renderMovieListHTML(fetchedMovies.results));
+});
+
+router.get(ROUTE.MOVIE_LISTS.UPCOMING, async (_, response) => {
+  const fetchedMovies = await fetchMovies("UPCOMING");
+  response.send(renderMovieListHTML(fetchedMovies.results));
 });
 
 export default router;

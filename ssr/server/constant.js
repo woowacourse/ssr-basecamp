@@ -18,7 +18,14 @@ export const TMDB_API_URL = {
   MOVIE_DETAIL_URL: BASE_URL,
 };
 
-export const PATH = {
+export const ROUTE = {
+  ROOT: "/",
+  MOVIE_LISTS: {
+    NOW_PLAYING: "/now-playing",
+    POPULAR: "/popular",
+    TOP_RATED: "/top-rated",
+    UPCOMING: "/upcoming",
+  },
   MOVIE_DETAIL: (movieId) => `/detail/${movieId}`,
 };
 
