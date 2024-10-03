@@ -55,7 +55,7 @@ export const generateMovies = (movieItems = []) =>
     )
     .join("\n");
 
-export const generateRenderedHTML = (movieItems, tabItem) => {
+export const generateRenderedMovieItemsHTML = (movieItems, tabItem) => {
   const bestMovieItem = movieItems[0];
   const moviesHTML = generateMovies(movieItems);
 
@@ -68,8 +68,13 @@ export const generateRenderedHTML = (movieItems, tabItem) => {
     "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/" +
       bestMovieItem.poster_path
   );
-  template = template.replace("${bestMovie.rate}", bestMovieItem.vote_average);
+  template = template.replace(
+    "${bestMovie.rate}",
+    bestMovieItem.vote_average.toFixed(1)
+  );
   template = template.replace("${bestMovie.title}", bestMovieItem.title);
+  template = template.replace("${id}", bestMovieItem.id);
+
   template = template.replace(
     "${nowPlayingTabItem}",
     tabItem === "nowPlaying" ? "selected" : ""
