@@ -1,21 +1,35 @@
 import { Router } from "express";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { fetchMovies, fetchMovieDetails } from "../api/movies.js";
+import { renderMoviePage } from "../services/renderMoviePage.js";
+import { TMDB_MOVIE_LISTS } from "../api/url.js";
 
 const router = Router();
 
-router.get("/", (_, res) => {
-  const templatePath = path.join(__dirname, "../../views", "index.html");
-  const moviesHTML = "<p>들어갈 본문 작성</p>";
+export const renderMovieListPage = async (listType, res) => {
+  const moviesData = await fetchMovies(listType);
+  const movieListHTML = renderMoviePage(moviesData);
 
-  const template = fs.readFileSync(templatePath, "utf-8");
-  const renderedHTML = template.replace("<!--${MOVIE_ITEMS_PLACEHOLDER}-->", moviesHTML);
+  res.send(movieListHTML);
+};
 
-  res.send(renderedHTML);
+router.get("/", async (req, res) => {
+  renderMovieListPage(TMDB_MOVIE_LISTS.POPULAR, res);
+});
+
+router.get("/now-playing", (req, res) => {
+  renderMovieListPage(TMDB_MOVIE_LISTS.NOW_PLAYING, res);
+});
+
+router.get("/popular", (req, res) => {
+  renderMovieListPage(TMDB_MOVIE_LISTS.POPULAR, res);
+});
+
+router.get("/top-rated", (req, res) => {
+  renderMovieListPage(TMDB_MOVIE_LISTS.TOP_RATED, res);
+});
+
+router.get("/upcoming", (req, res) => {
+  renderMovieListPage(TMDB_MOVIE_LISTS.UPCOMING, res);
 });
 
 export default router;
