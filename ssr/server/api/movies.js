@@ -1,0 +1,8 @@
+import { FETCH_OPTIONS, TMDB_MOVIE_DETAIL_URL } from "./url.js";
+
+export const fetchMovies = async (url) => {
+  const response = await fetch(url, FETCH_OPTIONS);
+
+  const data = await response.json();
+  return data.results;
+};
