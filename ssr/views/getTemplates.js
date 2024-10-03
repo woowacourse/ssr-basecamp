@@ -22,13 +22,11 @@ export const getMovieItemsHTML = (movieItems) => {
   });
 };
 
-export const getMovieDetailModalHTML = (moviesPageTemplate, movieDetail) => {
-  return moviesPageTemplate.replace(
-    '<!--${MODAL_AREA}-->',
-    /*html*/ `
+export const getMovieDetailModalHTML = (movieDetail) => {
+  return /*html*/ `
       <div class="modal-background active" id="modalBackground">
         <div class="modal">
-        <button class="close-modal" id="closeModal"><img src="../images/modal_button_close.png" /></button>
+        <button class="close-modal" id="closeModal"><img src="/assets/images/modal_button_close.png" /></button>
         <div class="modal-container">
           <div class="modal-image">
             <img src="https://image.tmdb.org/t/p/original/${
@@ -40,7 +38,7 @@ export const getMovieDetailModalHTML = (moviesPageTemplate, movieDetail) => {
             <p class="category">${
               movieDetail.release_date
             } · ${movieDetail.genres.map((genre) => genre.name).join(', ')}</p>
-            <p class="rate"><img src="../public/images/star_filled.png" class="star" /><span>7.7</span></p>
+            <p class="rate"><img src="/assets/images/star_filled.png" class="star" /><span>7.7</span></p>
             <hr />
             <p class="detail">
               ${movieDetail.overview}
@@ -59,6 +57,5 @@ export const getMovieDetailModalHTML = (moviesPageTemplate, movieDetail) => {
         });
       });
     </script>
-  `
-  );
+  `;
 };

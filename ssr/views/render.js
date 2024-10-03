@@ -4,12 +4,12 @@ import { fileURLToPath } from 'url';
 
 import { fetchMovieDetail, fetchMovies } from '../api/movies.js';
 import { getMovieDetailModalHTML, getMovieItemsHTML } from './getTemplates.js';
+import { round } from '../utils/round.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const renderMovieList = async (req, res) => {
-  const endpoint = req.path;
+export const renderMovieList = async (endpoint, res) => {
   const movieItems = await fetchMovies(endpoint).then((data) => data.results);
   const bestMovieItem = movieItems[0];
   const moviesHTML = getMovieItemsHTML(movieItems).join('');
@@ -21,25 +21,37 @@ export const renderMovieList = async (req, res) => {
   template = template.replace(
     '${background-container}',
     'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/' +
-      bestMovieItem.background
+      bestMovieItem.backdrop_path
   );
-  template = template.replace('${bestMovie.rate}', bestMovieItem.rate);
+  template = template.replace(
+    '${bestMovie.rate}',
+    round(bestMovieItem.vote_average)
+  );
   template = template.replace('${bestMovie.title}', bestMovieItem.title);
 
-  res.send(template);
+  template = renderTabs(template, endpoint);
+
+  return template;
+  ㅡ;
 };
 
-export const renderMovieDetail = async (req, res) => {
+export const renderMovieDetailModal = async (req, res) => {
   const { id: movieId } = req.params;
   const movieDetailItem = await fetchMovieDetail(movieId).then((data) => data);
-  console.log('movieDetailItem', movieDetailItem);
-  const templatePath = path.join(__dirname, './', 'index.html');
-  let template = fs.readFileSync(templatePath, 'utf-8');
 
-  const movieDetailModalHTML = getMovieDetailModalHTML(
-    template,
-    movieDetailItem
+  const movieDetailModalHTML = getMovieDetailModalHTML(movieDetailItem);
+
+  return movieDetailModalHTML;
+};
+
+export const renderTabs = (template, currentPath) => {
+  template = template.replace(
+    new RegExp(
+      `<a\\s+href="${currentPath}">\\s*<div\\s+class="tab-item">`,
+      'g'
+    ),
+    `<a href="${currentPath}"><div class="tab-item selected">`
   );
 
-  res.send(movieDetailModalHTML);
+  return template;
 };
