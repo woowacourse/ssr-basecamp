@@ -5,6 +5,7 @@ import {
   FETCH_OPTIONS,
   TMDB_BANNER_URL,
   TMDB_THUMBNAIL_URL,
+  TAB_DATA,
 } from "../../src/constants.js";
 import path from "path";
 import fs from "fs";
@@ -80,6 +81,7 @@ const getMovieDetailModalInnerHTML = (movieDetail) => {
             const closeModal = document.getElementById("closeModal");
             closeModal.addEventListener("click", () => {
               document.getElementById("modalBackground").remove();
+              document.getElementById("${TAB_DATA[0].title}-tab")
               history.pushState(null, null, '/'); // URL을 목록 페이지로 변경
             });
           });
@@ -89,6 +91,21 @@ const getMovieDetailModalInnerHTML = (movieDetail) => {
 
 export const renderMoviesPage = async (req, res, listType, movieId = null) => {
   try {
+    const currentPath = req.path === "/" ? "/now-playing" : req.path; // 현재 요청된 URL 경로
+
+    const tabsHTML = TAB_DATA.map((tab) => {
+      const selectedClass = currentPath === tab.path ? "selected" : "";
+      return `
+        <li>
+          <a id="${tab.title}-tab" href="${tab.path}">
+            <div class="tab-item ${selectedClass}">
+              <h3>${tab.title}</h3>
+            </div>
+          </a>
+        </li>
+      `;
+    }).join("");
+
     const response = await fetch(TMDB_MOVIE_LISTS[listType], FETCH_OPTIONS);
     const moviesData = await response.json();
 
@@ -125,6 +142,7 @@ export const renderMoviesPage = async (req, res, listType, movieId = null) => {
 
     // 템플릿에 영화 데이터 및 모달 데이터 삽입
     let renderedHTML = template
+      .replace("${TAB_ITEMS_PLACEHOLDER}", tabsHTML)
       .replace("${background-container}", bestMovieBanner)
       .replace("${MOVIE_ITEMS_PLACEHOLDER}", moviesHTML)
       .replace("${bestMovie.title}", bestMovieTitle)

@@ -20,3 +20,10 @@ export const FETCH_OPTIONS = {
     Authorization: "Bearer " + process.env.TMDB_TOKEN,
   },
 };
+
+export const TAB_DATA = [
+  { path: "/now-playing", title: "상영 중" },
+  { path: "/popular", title: "인기순" },
+  { path: "/top-rated", title: "평점순" },
+  { path: "/upcoming", title: "상영 예정" },
+];
