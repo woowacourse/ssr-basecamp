@@ -2,8 +2,8 @@ import { Router } from "express";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { generateMovieItems } from "../HTMLgenerator.js";
-import { fetchMovieItems } from "../apis/movies.js";
+import { generateMovieItems, generateMovieModal } from "../HTMLgenerator.js";
+import { fetchMovieDetail, fetchMovieItems } from "../apis/movies.js";
 import { TMDB_BANNER_URL } from "../constants.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -24,6 +24,14 @@ const renderMovieItemsHTML = (movies) => {
       "${background-container}",
       `${TMDB_BANNER_URL}/${movies[0].backdrop_path}`
     );
+};
+
+const renderMovieModalDetailHTML = (movie) => {
+  const templatePath = path.join(__dirname, "../../views", "index.html");
+  const template = fs.readFileSync(templatePath, "utf-8");
+
+  const movieModalDetailHTML = generateMovieModal(movie);
+  return template.replace("<!--${MODAL_AREA}-->", movieModalDetailHTML);
 };
 
 router.get("/", async (_, res) => {
@@ -54,6 +62,13 @@ router.get("/upcoming", async (_, res) => {
   const movies = await fetchMovieItems("upcoming");
 
   res.send(renderMovieItemsHTML(movies));
+});
+
+router.get("/detail/:id", async (req, res) => {
+  const movieId = req.params.id;
+  const movieDetail = await fetchMovieDetail(movieId);
+
+  res.send(renderMovieModalDetailHTML(movieDetail));
 });
 
 export default router;

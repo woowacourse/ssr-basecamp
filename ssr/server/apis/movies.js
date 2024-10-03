@@ -11,3 +11,11 @@ export const fetchMovieItems = async (category = "nowPlaying") => {
 
   return data.results;
 };
+
+export const fetchMovieDetail = async (id) => {
+  const url = `${TMDB_MOVIE_DETAIL_URL}${id}?language=ko-KR`;
+  const response = await fetch(url, FETCH_OPTIONS);
+  const data = await response.json();
+
+  return data;
+};
