@@ -1,23 +1,20 @@
-import { useEffect, useState } from "react";
 import { fetchMovieItems } from "src/api";
 import { TMDB_THUMBNAIL_URL } from "src/Constant";
 
-export default function csr() {
-  const [movieItems, setMovieItems] = useState([]);
+export const getStaticProps = async () => {
+  const movieItems = await fetchMovieItems();
 
-  useEffect(() => {
-    fetchMovies();
-  }, []);
+  return {
+    props: {
+      movieItems,
+    },
+  };
+};
 
-  async function fetchMovies() {
-    const movieItems = await fetchMovieItems();
-
-    setMovieItems(movieItems);
-  }
-
+export default function ssr({ movieItems }) {
   return (
     <div>
-      <h1>영화 목록</h1>
+      <h1>SSG로 렌더링한 영화 목록입니다</h1>
       {movieItems?.map((item) => (
         <div key={item.id}>
           <img src={TMDB_THUMBNAIL_URL + item.poster_path} alt={item.title} height="80" />

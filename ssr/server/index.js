@@ -7,7 +7,7 @@ import movieRouter from "./routes/index.js";
 // import membersRouter from "./routes/members.js"; // 본 미션 참고를 위한 코드이며 사전 미션에서는 사용하지 않습니다.
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
