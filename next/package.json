@@ -6,11 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "start:json-server": "json-server --watch db.json --port 3660"
   },
   "dependencies": {
+    "next": "14.2.15",
     "react": "^18",
-    "react-dom": "^18",
-    "next": "14.2.15"
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "json-server": "^1.0.0-beta.3"
   }
 }

@@ -8,10 +8,17 @@ NEXT_PUBLIC_TMDB_TOKEN=자신의토큰
 
 #### 2. 다음의 명령어를 실행
 
-```
-npm run build
-npm run start
-```
+- 콘솔을 열어 다음의 명령어 실행 (TMDB 목 서버)
+
+  ```
+  npm run start:json-server
+  ```
+
+- 콘솔을 열어 다음의 명령어 실행 (NextJS 서버)
+  ```
+  npm run build
+  npm run start
+  ```
 
 #### 3. 다음의 경로 접근
 
